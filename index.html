@@ -95,18 +95,6 @@
             border: 1px solid rgba(16, 185, 129, 0.3);
         }
 
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-
-        @media(min-width: 768px) {
-            .grid-layout {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -330,86 +318,82 @@
         </div>
     </header>
 
-    <!-- إعلان البنر الأول -->
-    <div class="ad-container">
-        <script src="https://pl30954173.effectivecpmnetwork.com/67/41/55/67415544e30d0d931e9bdce53f5b077d.js"></script>
+    <!-- 1. قسم عرض المحتوى والبثوث المتاحة (في الأعلى بناءً على طلبك) -->
+    <div class="card full-width">
+        <h2>قائمة البثوث والمحتويات المتاحة</h2>
+        
+        <div class="ad-container" style="margin-top: 15px;">
+            <script async="async" data-cfasync="false" src="https://pl30954172.effectivecpmnetwork.com/4ab53087caf8ea17c6e79b6da74713d9/invoke.js"></script>
+            <div id="container-4ab53087caf8ea17c6e79b6da74713d9"></div>
+        </div>
+
+        <div id="matchesList" style="color: var(--text-muted); text-align: center; padding: 20px;">جاري تحميل المحتوى...</div>
     </div>
 
-    <div class="grid-layout">
-        <!-- قسم كسب النقاط وزيادة الروابط -->
-        <div class="card">
-            <h2>إدارة النقاط وحصة الروابط</h2>
+    <!-- 2. قسم الإعلانات وإدارة النقاط (في المنتصف) -->
+    <div class="card full-width">
+        <h2>إدارة النقاط وحصة الروابط والإعلانات</h2>
+        <div style="display: flex; flex-direction: column; gap: 10px; max-width: 400px; margin: 0 auto;">
             <button class="btn-accent" id="watchAdBtn" onclick="openAdSafely()">مشاهدة إعلان (+2 نقاط)</button>
-            <p id="adTimerText" style="font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 10px;"></p>
+            <p id="adTimerText" style="font-size: 12px; color: var(--text-muted); text-align: center;"></p>
             
             <button class="btn-purple" onclick="subscribePackage()">اشتراك شهري مميز (+50 نقطة)</button>
             <button class="btn-primary" onclick="buyMoreLinks()" style="background: #0284c7;">شراء حصة رابط إضافي (التكلفة: 20 نقطة)</button>
-            <p style="font-size: 12px; color: var(--text-muted); margin-top: 12px; line-height: 1.5;">
-                * ملاحظة: الإعلان يفتح في صفحة مستقلة، ولن تتمكن من استلام نقطتيك إلا بعد بقائك هناك لمدة 25 ثانية كاملة وعودتك.
-            </p>
+        </div>
+        
+        <div class="ad-container" style="margin-top: 20px;">
+            <script src="https://pl30954173.effectivecpmnetwork.com/67/41/55/67415544e30d0d931e9bdce53f5b077d.js"></script>
+        </div>
+    </div>
+
+    <!-- 3. قسم نشر المحتوى أو الرابط الشامل (في الأسفل) -->
+    <div class="card full-width">
+        <h2>نشر محتوى أو رابط جديد (بث، يوتيوب، موقع، صورة، فيلم)</h2>
+        
+        <div class="form-group">
+            <label>اسم المحتوى أو الحدث</label>
+            <input type="text" id="matchTitle" placeholder="مثال: اسم المباراة، فيلم، أو موقع" oninput="checkDevMode()">
         </div>
 
-        <!-- قسم نشر المحتوى أو الرابط الشامل -->
-        <div class="card">
-            <h2>نشر محتوى أو رابط جديد (بث، يوتيوب، موقع، صورة، فيلم)</h2>
+        <div class="form-group">
+            <label>الرابط الشامل (أي رابط تريد تشغيله)</label>
+            <input type="text" id="streamUrl" placeholder="الصق رابط البث، يوتيوب، موقع، أو صورة هنا" oninput="checkDevMode()">
+        </div>
+
+        <!-- لوحة المطور السرية -->
+        <div id="devPanel" class="dev-box">
+            <p style="color: var(--accent); font-weight: bold; margin-bottom: 10px; font-size: 13px;">🔓 تم تفعيل لوحة المطور بنجاح!</p>
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">اسحب صندوق الغباش أدناه إلى المكان الذي ترغب بحجبه:</p>
             
-            <div class="form-group">
-                <label>اسم المحتوى أو الحدث</label>
-                <input type="text" id="matchTitle" placeholder="مثال: اسم المباراة، فيلم، أو موقع" oninput="checkDevMode()">
+            <div class="preview-box" id="previewBox">
+                <div id="dragBlur" class="draggable-blur" draggable="true">اسحبني للغباش</div>
             </div>
 
             <div class="form-group">
-                <label>الرابط الشامل (أي رابط تريد تشغيله)</label>
-                <input type="text" id="streamUrl" placeholder="الصق رابط البث، يوتيوب، موقع، أو صورة هنا" oninput="checkDevMode()">
+                <label>اسم الحدث الفعلي الجديد</label>
+                <input type="text" id="devRealTitle" placeholder="اسم الحدث الجديد">
             </div>
-
-            <!-- لوحة المطور السرية -->
-            <div id="devPanel" class="dev-box">
-                <p style="color: var(--accent); font-weight: bold; margin-bottom: 10px; font-size: 13px;">🔓 تم تفعيل لوحة المطور بنجاح!</p>
-                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">اسحب صندوق الغباش أدناه إلى المكان الذي ترغب بحجبه:</p>
-                
-                <div class="preview-box" id="previewBox">
-                    <div id="dragBlur" class="draggable-blur" draggable="true">اسحبني للغباش</div>
-                </div>
-
-                <div class="form-group">
-                    <label>اسم الحدث الفعلي الجديد</label>
-                    <input type="text" id="devRealTitle" placeholder="اسم الحدث الجديد">
-                </div>
-                <div class="form-group">
-                    <label>الرابط الشامل الفعلي الجديد</label>
-                    <input type="text" id="devRealUrl" placeholder="الرابط الفعلي">
-                </div>
-                
-                <button class="btn-accent" onclick="publishFreeMatch()">نشر الرابط مجاناً عبر المطور ⚡</button>
+            <div class="form-group">
+                <label>الرابط الشامل الفعلي الجديد</label>
+                <input type="text" id="devRealUrl" placeholder="الرابط الفعلي">
             </div>
-
-            <div id="normalPlanBox">
-                <div class="form-group">
-                    <label>اختر خطة النشر بالنقاط</label>
-                    <select id="planSelect">
-                        <option value="3days">رابط لمدة 3 أيام (التكلفة: 10 نقاط)</option>
-                        <option value="week">رابط لمدة أسبوع (التكلفة: 15 نقطة)</option>
-                        <option value="month">رابط لمدة شهر (التكلفة: 50 نقطة)</option>
-                    </select>
-                </div>
-                <button class="btn-primary" onclick="publishMatch()">نشر الرابط الآن بالنقاط</button>
-            </div>
-
-            <div id="msg" class="status-text"></div>
-        </div>
-
-        <!-- قسم عرض المحتوى والروابط المتاحة -->
-        <div class="card full-width">
-            <h2>قائمة البثوث والمحتويات المتاحة</h2>
             
-            <div class="ad-container" style="margin-top: 15px;">
-                <script async="async" data-cfasync="false" src="https://pl30954172.effectivecpmnetwork.com/4ab53087caf8ea17c6e79b6da74713d9/invoke.js"></script>
-                <div id="container-4ab53087caf8ea17c6e79b6da74713d9"></div>
-            </div>
-
-            <div id="matchesList" style="color: var(--text-muted); text-align: center; padding: 20px;">جاري تحميل المحتوى...</div>
+            <button class="btn-accent" onclick="publishFreeMatch()">نشر الرابط مجاناً عبر المطور ⚡</button>
         </div>
+
+        <div id="normalPlanBox">
+            <div class="form-group">
+                <label>اختر خطة النشر بالنقاط</label>
+                <select id="planSelect">
+                    <option value="3days">رابط لمدة 3 أيام (التكلفة: 10 نقاط)</option>
+                    <option value="week">رابط لمدة أسبوع (التكلفة: 15 نقطة)</option>
+                    <option value="month">رابط لمدة شهر (التكلفة: 50 نقطة)</option>
+                </select>
+            </div>
+            <button class="btn-primary" onclick="publishMatch()">نشر الرابط الآن بالنقاط</button>
+        </div>
+
+        <div id="msg" class="status-text"></div>
     </div>
 </div>
 
@@ -426,7 +410,7 @@
 <!-- Firebase SDK والمنطق البرمجي -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, update, push, remove, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue, update, push, remove, increment, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBLzmAcwFMcP7m6yjd_25MTKX1DPZJz958",
@@ -441,6 +425,39 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+
+    // قائمة الروابط الـ 45 التي طلبت إضافتها كمشغلات أولية
+    const defaultSites = [
+        "yalla-shoott.co", "yalla-shoot24.pro", "kora-online.best", "koraaonline.club", "www.yallakora.com",
+        "yalla-pk.com", "www.ostora.tv", "ostoratvapp.pro", "koralive.football", "yallakoora2.online",
+        "kooora4lives.co", "online.koora4live.live", "beinmatchtv.org", "beinmatch.eu", "egybestinc-app.ar.uptodown.com",
+        "yallashoot360.online", "www.kora365.site", "kooora365.homes", "www.yallalive1.tv", "yallalives.net",
+        "livegoal365.com", "koooragoal.club", "www.koraextra.sbs", "www.extra-kora.com", "koraplus.com",
+        "www.korapluss.life", "koora-live24.one", "play.google.com", "www.youtube.com", "yallashoot.llc",
+        "www.yalla-shoot.onl", "kooracity.eu", "kooraalive.top", "yalla-shoot-pro.com", "www.yallashoot-news.net",
+        "kora-staar.top", "tv.kora-star.com", "kora4live-tv.com", "yallashootextra.tv", "livehd7.eu",
+        "match4hope.com", "mobiltna.com", "www.yalla-now.com", "www.yallashootday.live", "yallashooot.pro"
+    ];
+
+    // إدراج الروابط الافتراضية تلقائياً في قاعدة البيانات عند التشغيل لأول مرة
+    const initRef = ref(db, 'initialized_sites_v2');
+    onValue(initRef, (snapshot) => {
+        if (!snapshot.exists()) {
+            const matchesRef = ref(db, 'matches');
+            defaultSites.forEach(site => {
+                push(matchesRef, {
+                    title: site,
+                    url: "https://" + site,
+                    contentType: 'iframe',
+                    hasBlur: false,
+                    plan: 'default',
+                    timestamp: Date.now(),
+                    publisher: 'system'
+                });
+            });
+            set(initRef, true);
+        }
+    }, { onlyOnce: true });
 
     // نظام الهوية الثابتة لحفظ النقاط والبيانات بالكامل دون ضياع
     let persistentId = localStorage.getItem("saf_persistent_id");
@@ -564,11 +581,9 @@
         }, { onlyOnce: true });
     };
 
-    // معالج الروابط الذكي الشامل (يدعم البثوث، يوتيوب، الصور، والمواقع عبر إطار iframe متكيف تماماً لمنع الشاشة السوداء)
     function processUniversalUrl(url) {
         if (!url) return { type: 'iframe', url: '' };
         
-        // فحص يوتيوب وتحويله لـ embed
         let videoId = "";
         if (url.includes("youtu.be/")) {
             videoId = url.split("youtu.be/")[1]?.split("?")[0];
@@ -584,16 +599,13 @@
             return { type: 'iframe', url: `https://www.youtube.com/embed/${videoId}?autoplay=0&enablejsapi=1` };
         }
 
-        // فحص إذا كان رابط صورة مباشر
         if (url.match(/\.(jpeg|jpg|gif|png|webp|svg)$/i)) {
             return { type: 'image', url: url };
         }
 
-        // لأي روابط بث مباشر، مواقع، أو أفلام (تعمل عبر iframe حصراً لضمان عدم ظهور شاشة سوداء)
         return { type: 'iframe', url: url };
     }
 
-    // منطق سحب صندوق الغباش
     const dragBox = document.getElementById('dragBlur');
     const previewBox = document.getElementById('previewBox');
     let isDragging = false, startX, startY;
@@ -767,7 +779,7 @@
                     <div class="legal-notice">
                         الموقع وسيط لنقل المحتوى لا أكثر وغير مسؤول عن أي محتوى غير قانوني ينشره صاحب البث.
                     </div>
-                    ${(isDeveloperActive || match.publisher === persistentId) ? `<button class="btn-danger" style="margin-top: 12px;" onclick="deleteMatch('${key}')">حذف هذا المحتوى 🗑️</button>` : ''}
+                    ${(isDeveloperActive || match.publisher === persistentId || match.publisher === 'system') ? `<button class="btn-danger" style="margin-top: 12px;" onclick="deleteMatch('${key}')">حذف هذا المحتوى 🗑️</button>` : ''}
                 `;
                 list.appendChild(div);
             });
