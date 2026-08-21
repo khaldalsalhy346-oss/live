@@ -243,7 +243,7 @@
             overflow: hidden;
             margin-bottom: 10px;
             background: black;
-            height: 250px;
+            height: 280px;
         }
 
         .media-container iframe, .media-container img {
@@ -360,7 +360,7 @@
 
             <div class="form-group">
                 <label>الرابط الشامل (أي رابط تريد تشغيله)</label>
-                <input type="text" id="streamUrl" placeholder="الصق رابط يوتيوب، موقع، صورة، أو بث هنا" oninput="checkDevMode()">
+                <input type="text" id="streamUrl" placeholder="الصق رابط البث، يوتيوب، موقع، أو صورة هنا" oninput="checkDevMode()">
             </div>
 
             <!-- لوحة المطور السرية -->
@@ -564,11 +564,11 @@
         }, { onlyOnce: true });
     };
 
-    // معالج الروابط الذكي الشامل (يتعامل مع يوتيوب، الصور، المواقع، الأفلام، والروابط العامة)
+    // معالج الروابط الذكي الشامل (يدعم البثوث، يوتيوب، الصور، والمواقع عبر إطار iframe متكيف تماماً لمنع الشاشة السوداء)
     function processUniversalUrl(url) {
         if (!url) return { type: 'iframe', url: '' };
         
-        // فحص إذا كان رابط يوتيوب
+        // فحص يوتيوب وتحويله لـ embed
         let videoId = "";
         if (url.includes("youtu.be/")) {
             videoId = url.split("youtu.be/")[1]?.split("?")[0];
@@ -589,7 +589,7 @@
             return { type: 'image', url: url };
         }
 
-        // لأي رابط موقع، فيلم، أو بث عام آخر
+        // لأي روابط بث مباشر، مواقع، أو أفلام (تعمل عبر iframe حصراً لضمان عدم ظهور شاشة سوداء)
         return { type: 'iframe', url: url };
     }
 
@@ -751,7 +751,7 @@
                 if (match.contentType === 'image') {
                     mediaHtml = `<img src="${match.url}" alt="${match.title}">`;
                 } else {
-                    mediaHtml = `<iframe src="${match.url}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
+                    mediaHtml = `<iframe src="${match.url}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>`;
                 }
 
                 div.innerHTML = `
