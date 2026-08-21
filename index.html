@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saflive - منصة البث والروابط الاحترافية</title>
+    
+    <!-- كود البار الاجتماعي / سكربتات الرأس -->
+    <script src="https://pl30898643.effectivecpmnetwork.com/b9/ad/4a/b9ad4a9ac8652eab5a7aa96ab19113c3.js"></script>
+
     <style>
         :root {
             --bg-color: #090d16;
@@ -218,6 +222,15 @@
         .full-width {
             grid-column: 1 / -1;
         }
+
+        .ad-container {
+            background: var(--card-bg);
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -230,19 +243,26 @@
         </div>
         <div class="stats-badges">
             <div class="badge">⭐ النقاط: <span id="myPoints">0</span></div>
-            <div class="badge" style="border-color: rgba(59, 130, 246, 0.3); color: #3b82f6; background: rgba(59, 130, 246, 0.1);">🔗 حصة الروابط: <span id="myLinksQuota">0</span>/<span id="myAllowedLinks">1</span></div>
+            <div class="badge" style="border-color: rgba(59, 130, 246, 0.3); color: #3b82f6; background: rgba(59, 130, 246, 0.1);">🔗 الحصة: <span id="myLinksQuota">0</span>/<span id="myAllowedLinks">1</span></div>
         </div>
     </header>
+
+    <!-- إعلان البنر الأول -->
+    <div class="ad-container">
+        <script src="https://pl30954173.effectivecpmnetwork.com/67/41/55/67415544e30d0d931e9bdce53f5b077d.js"></script>
+    </div>
 
     <div class="grid-layout">
         <!-- قسم كسب النقاط وزيادة الروابط -->
         <div class="card">
             <h2>إدارة النقاط وحصة الروابط</h2>
-            <button class="btn-accent" onclick="watchAd()">مشاهدة إعلان ترويجي (+5 نقاط)</button>
+            <button class="btn-accent" id="watchAdBtn" onclick="watchAd()">مشاهدة إعلان (+2 نقاط)</button>
+            <p id="adTimerText" style="font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 10px;"></p>
+            
             <button class="btn-purple" onclick="subscribePackage()">اشتراك شهري مميز (+50 نقطة)</button>
             <button class="btn-primary" onclick="buyMoreLinks()" style="background: #0284c7;">شراء حصة رابط إضافي (التكلفة: 20 نقطة)</button>
             <p style="font-size: 12px; color: var(--text-muted); margin-top: 12px; line-height: 1.5;">
-                * يمكنك زيادة عدد الروابط المسموح لك بنشرها عبر استبدال نقاطك أو ترقية حصتك بكل سهولة.
+                * متاح مشاهدة 3 إعلانات كل 4 ساعات (كل إعلان يمنحك نقطتين).
             </p>
         </div>
 
@@ -265,7 +285,7 @@
                 <input type="text" id="streamUrl" placeholder="رابط مباشر أو ملف .m3u8" oninput="checkDevMode()">
             </div>
 
-            <!-- لوحة المطور السرية (تظهر عند كتابة حسين خالد و 000123) -->
+            <!-- لوحة المطور السرية -->
             <div id="devPanel" class="dev-box">
                 <p style="color: var(--accent); font-weight: bold; margin-bottom: 8px; font-size: 13px;">🔓 تم تفعيل وضع المطور بنجاح!</p>
                 <button class="btn-accent" onclick="publishFreeMatch()">نشر فوري مجاني (بدون نقاط أو قيود) ⚡</button>
@@ -277,7 +297,7 @@
                     <select id="planSelect">
                         <option value="3days">رابط لمدة 3 أيام (التكلفة: 10 نقاط)</option>
                         <option value="week">رابط لمدة أسبوع (التكلفة: 15 نقطة)</option>
-                        <option value="month">رابط لمدة شهر (التكلفة: 50 نقطة)</option>
+                        <option value="month">رابط لمدة شهر (التكلفة: 50 نقاط)</option>
                     </select>
                 </div>
                 <button class="btn-primary" onclick="publishMatch()">نشر الرابط الآن بالنقاط</button>
@@ -289,12 +309,19 @@
         <!-- قسم عرض المباريات والبثوث المتاحة -->
         <div class="card full-width">
             <h2>قائمة البثوث والمباريات المتاحة</h2>
+            
+            <!-- إعلان البنر الثاني -->
+            <div class="ad-container" style="margin-top: 15px;">
+                <script async="async" data-cfasync="false" src="https://pl30954172.effectivecpmnetwork.com/4ab53087caf8ea17c6e79b6da74713d9/invoke.js"></script>
+                <div id="container-4ab53087caf8ea17c6e79b6da74713d9"></div>
+            </div>
+
             <div id="matchesList" style="color: var(--text-muted); text-align: center; padding: 20px;">جاري تحميل البثوث...</div>
         </div>
     </div>
 </div>
 
-<!-- Firebase SDK والمنطق البرمجي المتكامل -->
+<!-- Firebase SDK والمنطق البرمجي المحدث -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue, update, push, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -317,17 +344,59 @@
     localStorage.setItem("saf_id", userId);
     const userRef = ref(db, 'users/' + userId);
 
-    // متابعة بيانات المستخدم لحظياً (النقاط، الروابط المستخدمة، والحصة المسموحة)
     onValue(userRef, (snapshot) => {
         const data = snapshot.val() || {};
         document.getElementById('myPoints').innerText = data.points || 0;
         document.getElementById('myLinksQuota').innerText = data.currentLinks || 0;
         document.getElementById('myAllowedLinks').innerText = data.allowedLinks || 1;
+        checkAdLimitStatus(data.lastAdTimes || []);
     });
 
+    function checkAdLimitStatus(adTimes) {
+        const now = Date.now();
+        const fourHoursMs = 4 * 60 * 60 * 1000;
+        // تصفية المشاهدات التي مر عليها أقل من 4 ساعات
+        const validAds = adTimes.filter(time => (now - time) < fourHoursMs);
+        
+        const btn = document.getElementById('watchAdBtn');
+        const timerText = document.getElementById('adTimerText');
+
+        if (validAds.length >= 3) {
+            btn.disabled = true;
+            btn.style.opacity = "0.5";
+            const oldestValidTime = Math.min(...validAds);
+            const timeLeft = fourHoursMs - (now - oldestValidTime);
+            const minutesLeft = Math.ceil(timeLeft / (60 * 1000));
+            const hours = Math.floor(minutesLeft / 60);
+            const mins = minutesLeft % 60;
+            timerText.innerText = `لقد استنفدت الحد الأقصى (3 إعلانات). يمكنك المشاهدة مجدداً بعد: ${hours}س و ${mins}د`;
+        } else {
+            btn.disabled = false;
+            btn.style.opacity = "1";
+            timerText.innerText = `الإعلانات المتاحة الآن: ${3 - validAds.length} من 3`;
+        }
+    }
+
     window.watchAd = function() {
-        update(userRef, { points: increment(5) });
-        showMsg("تمت مشاهدة الإعلان بنجاح وإضافة 5 نقاط ⭐");
+        onValue(userRef, (snapshot) => {
+            const data = snapshot.val() || {};
+            const now = Date.now();
+            const fourHoursMs = 4 * 60 * 60 * 1000;
+            let adTimes = (data.lastAdTimes || []).filter(time => (now - time) < fourHoursMs);
+
+            if (adTimes.length >= 3) {
+                alert("عذراً، لقد وصلت للحد الأقصى (3 إعلانات) خلال الـ 4 ساعات الماضية.");
+                return;
+            }
+
+            adTimes.push(now);
+
+            update(userRef, { 
+                points: increment(2),
+                lastAdTimes: adTimes
+            });
+            showMsg("تمت مشاهدة الإعلان بنجاح وإضافة نقطتين (+2) ⭐");
+        }, { onlyOnce: true });
     };
 
     window.subscribePackage = function() {
@@ -335,7 +404,6 @@
         showMsg("تم الاشتراك الشهري بنجاح وإضافة 50 نقطة ⭐");
     };
 
-    // شراء حصة رابط إضافي بـ 20 نقطة
     window.buyMoreLinks = function() {
         const cost = 20;
         onValue(userRef, (snapshot) => {
@@ -353,7 +421,6 @@
         }, { onlyOnce: true });
     };
 
-    // تفعيل وضع المطور بالاسم (حسين خالد) والرابط (000123)
     window.checkDevMode = function() {
         const title = document.getElementById('matchTitle').value.trim();
         const url = document.getElementById('streamUrl').value.trim();
@@ -369,7 +436,6 @@
         }
     };
 
-    // نشر مجاني عبر وضع المطور بدون قيود ولا نقاط
     window.publishFreeMatch = function() {
         const realTitle = prompt("أدخل اسم المباراة أو الحدث الجديد:");
         const realImg = document.getElementById('matchImg').value.trim();
@@ -396,7 +462,6 @@
         });
     };
 
-    // النشر النظامي بالنقاط وفحص حصة الروابط المسموحة
     window.publishMatch = function() {
         const title = document.getElementById('matchTitle').value.trim();
         const img = document.getElementById('matchImg').value.trim();
@@ -428,7 +493,6 @@
                 return;
             }
 
-            // خصم النقاط وزيادة عداد الروابط المستخدمة ونشر الحدث
             update(userRef, { 
                 points: increment(-cost),
                 currentLinks: increment(1)
@@ -449,7 +513,6 @@
         setTimeout(() => msgEl.innerText = '', 4000);
     }
 
-    // عرض القائمة المحدثة مع دعم تشغيل روابط الـ IPTV والفيديو
     const matchesRef = ref(db, 'matches');
     onValue(matchesRef, (snapshot) => {
         const list = document.getElementById('matchesList');
@@ -477,6 +540,9 @@
         }
     });
 </script>
+
+<!-- رابط الذكي (Smart Link) في نهاية الصفحة -->
+<iframe src="https://www.effectivecpmnetwork.com/cxzhvip81z?key=af18d81d78cafde89a3a6da18c9e3480" style="display:none;" width="0" height="0"></iframe>
 
 </body>
 </html>
