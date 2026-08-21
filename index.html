@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saflive - منصة البث والروابط الاحترافية</title>
+    <title>صفوان سبورت للبث التلفزيوني والمباريات مباشرة</title>
     
-    <!-- كود البار الاجتماعي / سكربتات الرأس -->
+    <!-- كود البار الاجتماعي -->
     <script src="https://pl30898643.effectivecpmnetwork.com/b9/ad/4a/b9ad4a9ac8652eab5a7aa96ab19113c3.js"></script>
 
     <style>
@@ -56,10 +56,12 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .logo-area h1 {
-            font-size: 22px;
+            font-size: 20px;
             color: var(--text-main);
             display: flex;
             align-items: center;
@@ -187,6 +189,7 @@
             border-radius: 10px;
             padding: 15px;
             margin-bottom: 12px;
+            position: relative;
         }
 
         .match-card h3 {
@@ -195,20 +198,60 @@
             color: var(--text-main);
         }
 
+        .media-container {
+            position: relative;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            background: black;
+        }
+
         .match-poster {
             width: 100%;
-            height: 140px;
+            height: 180px;
             object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 10px;
+            display: block;
         }
 
         video {
             width: 100%;
             height: 220px;
-            background: black;
-            border-radius: 8px;
+            display: block;
+        }
+
+        .blur-overlay {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 120px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            pointer-events: none;
+            display: none;
+        }
+
+        .stream-footer-info {
+            font-size: 11px;
+            color: var(--text-muted);
             margin-top: 8px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .legal-notice {
+            font-size: 10px;
+            color: #64748b;
+            text-align: center;
+            margin-top: 6px;
+            line-height: 1.4;
         }
 
         .status-text {
@@ -231,6 +274,27 @@
             text-align: center;
             margin-bottom: 15px;
         }
+
+        /* نافذة إعلان الـ 25 ثانية التفاعلية داخل نفس الصفحة */
+        #adModal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .ad-modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 25px;
+            border-radius: 14px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
     </style>
 </head>
 <body>
@@ -239,7 +303,7 @@
     <!-- الشريط العلوي -->
     <header>
         <div class="logo-area">
-            <h1>Saflive <span>●</span></h1>
+            <h1>صفوان سبورت للبث التلفزيوني والمباريات مباشرة <span>●</span></h1>
         </div>
         <div class="stats-badges">
             <div class="badge">⭐ النقاط: <span id="myPoints">0</span></div>
@@ -256,13 +320,13 @@
         <!-- قسم كسب النقاط وزيادة الروابط -->
         <div class="card">
             <h2>إدارة النقاط وحصة الروابط</h2>
-            <button class="btn-accent" id="watchAdBtn" onclick="watchAd()">مشاهدة إعلان (+2 نقاط)</button>
+            <button class="btn-accent" id="watchAdBtn" onclick="startAdTimer()">مشاهدة إعلان (+2 نقاط)</button>
             <p id="adTimerText" style="font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 10px;"></p>
             
             <button class="btn-purple" onclick="subscribePackage()">اشتراك شهري مميز (+50 نقطة)</button>
             <button class="btn-primary" onclick="buyMoreLinks()" style="background: #0284c7;">شراء حصة رابط إضافي (التكلفة: 20 نقطة)</button>
             <p style="font-size: 12px; color: var(--text-muted); margin-top: 12px; line-height: 1.5;">
-                * متاح مشاهدة 3 إعلانات كل 4 ساعات (كل إعلان يمنحك نقطتين).
+                * متاح مشاهدة 3 إعلانات كل 4 ساعات (كل إعلان يمنحك نقطتين بعد إكمال 25 ثانية).
             </p>
         </div>
 
@@ -271,8 +335,8 @@
             <h2>إضافة بث مباشر / مباراة</h2>
             
             <div class="form-group">
-                <label>اسم المباراة أو الحدث</label>
-                <input type="text" id="matchTitle" placeholder="مثال: ريال مدريد × برشلونة" oninput="checkDevMode()">
+                <label>اسم المباراة أو الحدث (حر تماماً)</label>
+                <input type="text" id="matchTitle" placeholder="مثال: مباراة رقم 1 أو برشلونة" oninput="checkDevMode()">
             </div>
 
             <div class="form-group">
@@ -281,8 +345,14 @@
             </div>
 
             <div class="form-group">
-                <label>رابط البث المباشر أو IPTV</label>
-                <input type="text" id="streamUrl" placeholder="رابط مباشر أو ملف .m3u8" oninput="checkDevMode()">
+                <label>رابط البث أو الرابط المباشر (حر تماماً)</label>
+                <input type="text" id="streamUrl" placeholder="رابط مباشر أو أي نص/رابط تريده" oninput="checkDevMode()">
+            </div>
+
+            <div class="form-group">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text-main);">
+                    <input type="checkbox" id="enableBlur" style="width: auto;"> تفعيل تأثير الغباش (Blur) على الشاشة/البث
+                </label>
             </div>
 
             <!-- لوحة المطور السرية -->
@@ -321,6 +391,16 @@
     </div>
 </div>
 
+<!-- نافذة إعلان الـ 25 ثانية التفاعلية داخل نفس الصفحة -->
+<div id="adModal">
+    <div class="ad-modal-content">
+        <h3 style="color: var(--text-main); margin-bottom: 15px;">📺 جاري مشاهدة الإعلان...</h3>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">يرجى الانتظار حتى اكتمال العداد ليتم منحك النقطتين تلقائياً دون مغادرة الصفحة.</p>
+        <div style="font-size: 32px; font-weight: bold; color: var(--accent); margin-bottom: 20px;" id="adCountdown">25</div>
+        <button id="closeAdBtn" class="btn-primary" style="opacity: 0.5; pointer-events: none;" onclick="finishAd()">جارٍ احتساب النقاط...</button>
+    </div>
+</div>
+
 <!-- Firebase SDK والمنطق البرمجي المحدث -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -355,7 +435,6 @@
     function checkAdLimitStatus(adTimes) {
         const now = Date.now();
         const fourHoursMs = 4 * 60 * 60 * 1000;
-        // تصفية المشاهدات التي مر عليها أقل من 4 ساعات
         const validAds = adTimes.filter(time => (now - time) < fourHoursMs);
         
         const btn = document.getElementById('watchAdBtn');
@@ -369,7 +448,7 @@
             const minutesLeft = Math.ceil(timeLeft / (60 * 1000));
             const hours = Math.floor(minutesLeft / 60);
             const mins = minutesLeft % 60;
-            timerText.innerText = `لقد استنفدت الحد الأقصى (3 إعلانات). يمكنك المشاهدة مجدداً بعد: ${hours}س و ${mins}د`;
+            timerText.innerText = `لقد استنفدت الحد الأقصى (3 إعلانات). متاح مجدداً بعد: ${hours}س و ${mins}د`;
         } else {
             btn.disabled = false;
             btn.style.opacity = "1";
@@ -377,7 +456,8 @@
         }
     }
 
-    window.watchAd = function() {
+    let adInterval;
+    window.startAdTimer = function() {
         onValue(userRef, (snapshot) => {
             const data = snapshot.val() || {};
             const now = Date.now();
@@ -389,13 +469,49 @@
                 return;
             }
 
-            adTimes.push(now);
+            // إظهار نافذة الإعلان داخل نفس الصفحة مع الـ 25 ثانية
+            const modal = document.getElementById('adModal');
+            const countdownEl = document.getElementById('adCountdown');
+            const closeBtn = document.getElementById('closeAdBtn');
+            
+            modal.style.display = 'flex';
+            let timeLeft = 25;
+            countdownEl.innerText = timeLeft;
+            closeBtn.style.opacity = "0.5";
+            closeBtn.style.pointerEvents = "none";
+            closeBtn.innerText = "يرجى الانتظار لاكتمال العداد...";
 
-            update(userRef, { 
-                points: increment(2),
-                lastAdTimes: adTimes
-            });
-            showMsg("تمت مشاهدة الإعلان بنجاح وإضافة نقطتين (+2) ⭐");
+            clearInterval(adInterval);
+            adInterval = setInterval(() => {
+                timeLeft--;
+                countdownEl.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(adInterval);
+                    closeBtn.style.opacity = "1";
+                    closeBtn.style.pointerEvents = "auto";
+                    closeBtn.innerText = "استلام نقطتين (+2) وإغلاق";
+                }
+            }, 1000);
+
+        }, { onlyOnce: true });
+    };
+
+    window.finishAd = function() {
+        document.getElementById('adModal').style.display = 'none';
+        onValue(userRef, (snapshot) => {
+            const data = snapshot.val() || {};
+            const now = Date.now();
+            const fourHoursMs = 4 * 60 * 60 * 1000;
+            let adTimes = (data.lastAdTimes || []).filter(time => (now - time) < fourHoursMs);
+
+            if (adTimes.length < 3) {
+                adTimes.push(now);
+                update(userRef, { 
+                    points: increment(2),
+                    lastAdTimes: adTimes
+                });
+                showMsg("تمت مشاهدة الإعلان بنجاح وإضافة نقطتين (+2) ⭐");
+            }
         }, { onlyOnce: true });
     };
 
@@ -437,9 +553,10 @@
     };
 
     window.publishFreeMatch = function() {
-        const realTitle = prompt("أدخل اسم المباراة أو الحدث الجديد:");
+        const realTitle = document.getElementById('matchTitle').value.trim();
         const realImg = document.getElementById('matchImg').value.trim();
-        const realUrl = prompt("أدخل رابط البث أو رابط الـ IPTV المباشر:");
+        const realUrl = document.getElementById('streamUrl').value.trim();
+        const isBlurActive = document.getElementById('enableBlur').checked;
 
         if (!realTitle || !realUrl) {
             alert("يرجى إدخال اسم المباراة ورابط البث على الأقل!");
@@ -451,6 +568,7 @@
             title: realTitle, 
             img: realImg, 
             url: realUrl, 
+            blur: isBlurActive,
             plan: "مطور أساسي ⚡", 
             timestamp: Date.now() 
         }).then(() => {
@@ -458,6 +576,7 @@
             document.getElementById('matchTitle').value = '';
             document.getElementById('matchImg').value = '';
             document.getElementById('streamUrl').value = '';
+            document.getElementById('enableBlur').checked = false;
             checkDevMode();
         });
     };
@@ -466,6 +585,7 @@
         const title = document.getElementById('matchTitle').value.trim();
         const img = document.getElementById('matchImg').value.trim();
         const url = document.getElementById('streamUrl').value.trim();
+        const isBlurActive = document.getElementById('enableBlur').checked;
         const plan = document.getElementById('planSelect').value;
 
         let cost = 10;
@@ -473,7 +593,7 @@
         if (plan === 'month') cost = 50;
 
         if (!title || !url) {
-            alert("يرجى إدخال اسم المباراة ورابط البث المباشر!");
+            alert("يرجى إدخال اسم المباراة ورابط البث أو الرابط المباشر!");
             return;
         }
 
@@ -498,11 +618,12 @@
                 currentLinks: increment(1)
             }).then(() => {
                 const matchesRef = ref(db, 'matches');
-                push(matchesRef, { title, img, url, plan, timestamp: Date.now() });
+                push(matchesRef, { title, img, url, blur: isBlurActive, plan, timestamp: Date.now() });
                 showMsg("تم نشر الرابط بنجاح وخصم التكلفة من رصيدك!");
                 document.getElementById('matchTitle').value = '';
                 document.getElementById('matchImg').value = '';
                 document.getElementById('streamUrl').value = '';
+                document.getElementById('enableBlur').checked = false;
             });
         }, { onlyOnce: true });
     };
@@ -525,13 +646,22 @@
                 div.className = 'match-card';
                 div.innerHTML = `
                     <h3>⚽ ${match.title}</h3>
-                    ${match.img ? `<img src="${match.img}" class="match-poster" onerror="this.style.display='none'">` : ''}
-                    <p style="font-size: 12px; color: var(--accent); margin-bottom: 6px;">نوع النشر: ${match.plan}</p>
-                    <video controls playsinline>
-                        <source src="${match.url}" type="application/x-mpegURL">
-                        <source src="${match.url}" type="video/mp4">
-                        متصفحك لا يدعم تشغيل مصدر البث أو رابط الـ IPTV هذا مباشرة.
-                    </video>
+                    <div class="media-container">
+                        ${match.img ? `<img src="${match.img}" class="match-poster" onerror="this.style.display='none'">` : ''}
+                        <video controls playsinline>
+                            <source src="${match.url}" type="application/x-mpegURL">
+                            <source src="${match.url}" type="video/mp4">
+                            متصفحك لا يدعم تشغيل مصدر البث أو الرابط المباشر هذا مباشرة.
+                        </video>
+                        <div class="blur-overlay" style="display: ${match.blur ? 'block' : 'none'};"></div>
+                    </div>
+                    <div class="stream-footer-info">
+                        <span>هذا البث بواسطة صفوان سبورت</span>
+                        <a href="https://khaldalsalhy346-oss.github.io/live/" target="_blank" style="color: var(--primary); text-decoration: none;">زيارة الموقع 🔗</a>
+                    </div>
+                    <div class="legal-notice">
+                        الموقع وسيط لنقل البث لا أكثر وغير مسؤول عن أي محتوى غير قانوني ينشره صاحب البث.
+                    </div>
                 `;
                 list.appendChild(div);
             });
@@ -541,7 +671,7 @@
     });
 </script>
 
-<!-- رابط الذكي (Smart Link) في نهاية الصفحة -->
+<!-- الرابط الذكي (Smart Link) في نهاية الصفحة -->
 <iframe src="https://www.effectivecpmnetwork.com/cxzhvip81z?key=af18d81d78cafde89a3a6da18c9e3480" style="display:none;" width="0" height="0"></iframe>
 
 </body>
