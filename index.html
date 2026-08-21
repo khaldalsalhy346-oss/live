@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saflive - البث المباشر ونظام النقاط</title>
-    <!-- استيراد الخطوط والتصميم العصري -->
+    <title>Saflive - منصة البث والروابط الاحترافية</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --primary: #3b82f6;
+            --bg-color: #090d16;
+            --card-bg: #131d31;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
             --accent: #10b981;
-            --text-color: #f8fafc;
-            --text-secondary: #94a3b8;
+            --accent-hover: #059669;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #1e293b;
+            --danger: #ef4444;
         }
 
         * {
@@ -24,7 +27,7 @@
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -32,236 +35,448 @@
             padding: 20px;
         }
 
-        header {
+        .container {
             width: 100%;
-            max-width: 900px;
+            max-width: 950px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 20px 25px;
+            border-radius: 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--card-bg);
-            padding: 15px 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            margin-bottom: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
         }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--primary);
+        .logo-area h1 {
+            font-size: 22px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .points-badge {
-            background: rgba(16, 185, 129, 0.15);
+        .logo-area span {
+            color: var(--danger);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        .stats-badges {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .badge {
+            background: rgba(16, 185, 129, 0.1);
             color: var(--accent);
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 20px;
             font-weight: bold;
-            font-size: 16px;
-            border: 1px solid var(--accent);
+            font-size: 14px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
         }
 
-        .container {
-            width: 100%;
-            max-width: 900px;
+        .grid-layout {
             display: grid;
             grid-template-columns: 1fr;
             gap: 20px;
         }
 
-        @media (min-width: 768px) {
-            .container {
-                grid-template-columns: 2fr 1fr;
+        @media(min-width: 768px) {
+            .grid-layout {
+                grid-template-columns: 1fr 1fr;
             }
         }
 
         .card {
             background: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
         }
 
-        .stream-box {
-            aspect-ratio: 16 / 9;
-            background: #000;
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid #334155;
-        }
-
-        .stream-placeholder {
-            color: var(--text-secondary);
-            font-size: 16px;
-            text-align: center;
-        }
-
-        h2 {
-            font-size: 18px;
+        .card h2 {
+            font-size: 17px;
             margin-bottom: 15px;
-            color: var(--text-color);
-            border-bottom: 2px solid #334155;
+            color: var(--text-main);
+            border-bottom: 2px solid var(--border);
             padding-bottom: 8px;
         }
 
-        .controls {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 11px 14px;
+            background: #0b111e;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
         }
 
         button {
-            flex: 1;
-            background: var(--primary);
-            color: white;
-            border: none;
+            width: 100%;
             padding: 12px;
+            border: none;
             border-radius: 8px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.1s;
         }
 
-        button:hover {
-            background: #2563eb;
+        button:active {
+            transform: scale(0.98);
         }
 
-        button.secondary {
-            background: #334155;
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); }
+
+        .btn-accent { background: var(--accent); color: white; margin-bottom: 8px; }
+        .btn-accent:hover { background: var(--accent-hover); }
+
+        .btn-purple { background: #8b5cf6; color: white; margin-bottom: 8px; }
+        .btn-purple:hover { background: #7c3aed; }
+
+        .dev-box {
+            background: rgba(16, 185, 129, 0.05);
+            border: 2px dashed var(--accent);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            display: none;
         }
 
-        button.secondary:hover {
-            background: #475569;
+        .match-card {
+            background: #0b111e;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
         }
 
-        .leaderboard-list {
-            list-style: none;
-            max-height: 250px;
-            overflow-y: auto;
+        .match-card h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: var(--text-main);
         }
 
-        .leaderboard-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 12px;
-            border-bottom: 1px solid #334155;
-            font-size: 15px;
+        .match-poster {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
         }
 
-        .leaderboard-item:last-child {
-            border-bottom: none;
+        video {
+            width: 100%;
+            height: 220px;
+            background: black;
+            border-radius: 8px;
+            margin-top: 8px;
         }
 
-        .status-msg {
-            margin-top: 10px;
+        .status-text {
             font-size: 13px;
             color: var(--accent);
             text-align: center;
+            margin-top: 10px;
+            min-height: 18px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
         }
     </style>
 </head>
 <body>
 
+<div class="container">
+    <!-- الشريط العلوي -->
     <header>
-        <div class="logo">Saflive 🔴</div>
-        <div class="points-badge">النقاط: <span id="userPoints">0</span> ⭐</div>
+        <div class="logo-area">
+            <h1>Saflive <span>●</span></h1>
+        </div>
+        <div class="stats-badges">
+            <div class="badge">⭐ النقاط: <span id="myPoints">0</span></div>
+            <div class="badge" style="border-color: rgba(59, 130, 246, 0.3); color: #3b82f6; background: rgba(59, 130, 246, 0.1);">🔗 حصة الروابط: <span id="myLinksQuota">0</span>/<span id="myAllowedLinks">1</span></div>
+        </div>
     </header>
 
-    <div class="container">
-        <!-- قسم البث المباشر -->
+    <div class="grid-layout">
+        <!-- قسم كسب النقاط وزيادة الروابط -->
         <div class="card">
-            <h2>مشاهدة البث المباشر</h2>
-            <div class="stream-box">
-                <div class="stream-placeholder">البث غير متصل حالياً<br><small>سيظهر البث هنا عند البدء</small></div>
-            </div>
-            <div class="controls">
-                <button onclick="addPoints(10)">اضسغط لاكتساب نقاط (+) ⭐</button>
-            </div>
-            <div id="status" class="status-msg"></div>
+            <h2>إدارة النقاط وحصة الروابط</h2>
+            <button class="btn-accent" onclick="watchAd()">مشاهدة إعلان ترويجي (+5 نقاط)</button>
+            <button class="btn-purple" onclick="subscribePackage()">اشتراك شهري مميز (+50 نقطة)</button>
+            <button class="btn-primary" onclick="buyMoreLinks()" style="background: #0284c7;">شراء حصة رابط إضافي (التكلفة: 20 نقطة)</button>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 12px; line-height: 1.5;">
+                * يمكنك زيادة عدد الروابط المسموح لك بنشرها عبر استبدال نقاطك أو ترقية حصتك بكل سهولة.
+            </p>
         </div>
 
-        <!-- منظومة النقاط ولوحة الصدارة -->
+        <!-- قسم نشر مباراة أو بث -->
         <div class="card">
-            <h2>لوحة المتصدرين</h2>
-            <ul class="leaderboard-list" id="leaderboard">
-                <li class="leaderboard-item"><span>جاري تحميل البيانات...</span><span>-</span></li>
-            </ul>
+            <h2>إضافة بث مباشر / مباراة</h2>
+            
+            <div class="form-group">
+                <label>اسم المباراة أو الحدث</label>
+                <input type="text" id="matchTitle" placeholder="مثال: ريال مدريد × برشلونة" oninput="checkDevMode()">
+            </div>
+
+            <div class="form-group">
+                <label>رابط الصورة البوستر (اختياري)</label>
+                <input type="text" id="matchImg" placeholder="https://example.com/image.jpg">
+            </div>
+
+            <div class="form-group">
+                <label>رابط البث المباشر أو IPTV</label>
+                <input type="text" id="streamUrl" placeholder="رابط مباشر أو ملف .m3u8" oninput="checkDevMode()">
+            </div>
+
+            <!-- لوحة المطور السرية (تظهر عند كتابة حسين خالد و 000123) -->
+            <div id="devPanel" class="dev-box">
+                <p style="color: var(--accent); font-weight: bold; margin-bottom: 8px; font-size: 13px;">🔓 تم تفعيل وضع المطور بنجاح!</p>
+                <button class="btn-accent" onclick="publishFreeMatch()">نشر فوري مجاني (بدون نقاط أو قيود) ⚡</button>
+            </div>
+
+            <div id="normalPlanBox">
+                <div class="form-group">
+                    <label>اختر خطة النشر بالنقاط</label>
+                    <select id="planSelect">
+                        <option value="3days">رابط لمدة 3 أيام (التكلفة: 10 نقاط)</option>
+                        <option value="week">رابط لمدة أسبوع (التكلفة: 15 نقطة)</option>
+                        <option value="month">رابط لمدة شهر (التكلفة: 50 نقطة)</option>
+                    </select>
+                </div>
+                <button class="btn-primary" onclick="publishMatch()">نشر الرابط الآن بالنقاط</button>
+            </div>
+
+            <div id="msg" class="status-text"></div>
+        </div>
+
+        <!-- قسم عرض المباريات والبثوث المتاحة -->
+        <div class="card full-width">
+            <h2>قائمة البثوث والمباريات المتاحة</h2>
+            <div id="matchesList" style="color: var(--text-muted); text-align: center; padding: 20px;">جاري تحميل البثوث...</div>
         </div>
     </div>
+</div>
 
-    <!-- ربط Firebase وقاعدة البيانات -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue, update, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+<!-- Firebase SDK والمنطق البرمجي المتكامل -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, onValue, update, push, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // إعدادات مشروعك الجديد على Firebase (saflive)
-        const firebaseConfig = {
-          apiKey: "AIzaSyBLzmAcwFMcP7m6yjd_25MTKX1DPZJz958",
-          authDomain: "saflive.firebaseapp.com",
-          databaseURL: "https://saflive-default-rtdb.firebaseio.com",
-          projectId: "saflive",
-          storageBucket: "saflive.appspot.com",
-          messagingSenderId: "58101936676",
-          appId: "1:58101936676:web:becc0daad1b39668351eb1",
-          measurementId: "G-27J67DR2WE"
-        };
+    const firebaseConfig = {
+      apiKey: "AIzaSyBLzmAcwFMcP7m6yjd_25MTKX1DPZJz958",
+      authDomain: "saflive.firebaseapp.com",
+      databaseURL: "https://saflive-default-rtdb.firebaseio.com",
+      projectId: "saflive",
+      storageBucket: "saflive.appspot.com",
+      messagingSenderId: "58101936676",
+      appId: "1:58101936676:web:becc0daad1b39668351eb1",
+      measurementId: "G-27J67DR2WE"
+    };
 
-        // تهيئة Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-        // تعريف مستخدم افتراضي للتجربة (يمكنك تعديل الاسم لاحقاً)
-        const userId = "user_" + Math.floor(Math.random() * 1000);
-        const userName = "المشاهد " + Math.floor(Math.random() * 100);
+    const userId = "user_" + (localStorage.getItem("saf_id") || Math.floor(Math.random() * 10000));
+    localStorage.setItem("saf_id", userId);
+    const userRef = ref(db, 'users/' + userId);
 
-        // مرجع نقاط المستخدم في قاعدة البيانات
-        const userRef = ref(db, 'users/' + userId);
+    // متابعة بيانات المستخدم لحظياً (النقاط، الروابط المستخدمة، والحصة المسموحة)
+    onValue(userRef, (snapshot) => {
+        const data = snapshot.val() || {};
+        document.getElementById('myPoints').innerText = data.points || 0;
+        document.getElementById('myLinksQuota').innerText = data.currentLinks || 0;
+        document.getElementById('myAllowedLinks').innerText = data.allowedLinks || 1;
+    });
 
-        // تحديث النقاط عند التفاعل
-        window.addPoints = function(amount) {
-            update(userRef, {
-                name: userName,
-                points: increment(amount)
-            }).then(() => {
-                document.getElementById('status').innerText = `تم إضافة ${amount} نقاط بنجاح!`;
-                setTimeout(() => document.getElementById('status').innerText = '', 2000);
-            });
-        };
+    window.watchAd = function() {
+        update(userRef, { points: increment(5) });
+        showMsg("تمت مشاهدة الإعلان بنجاح وإضافة 5 نقاط ⭐");
+    };
 
-        // قراءة النقاط الخاصة بالمستخدم بشكل مباشر
+    window.subscribePackage = function() {
+        update(userRef, { points: increment(50) });
+        showMsg("تم الاشتراك الشهري بنجاح وإضافة 50 نقطة ⭐");
+    };
+
+    // شراء حصة رابط إضافي بـ 20 نقطة
+    window.buyMoreLinks = function() {
+        const cost = 20;
         onValue(userRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data && data.points) {
-                document.getElementById('userPoints').innerText = data.points;
-            }
-        });
-
-        // جلب قائمة المتصدرين وتحديثها لحظياً من Realtime Database
-        const allUsersRef = ref(db, 'users');
-        onValue(allUsersRef, (snapshot) => {
-            const users = snapshot.val();
-            const listEl = document.getElementById('leaderboard');
-            listEl.innerHTML = '';
-
-            if (users) {
-                // ترتيب المستخدمين تنازلياً حسب النقاط
-                const sortedUsers = Object.values(users).sort((a, b) => b.points - a.points);
-                
-                sortedUsers.forEach((user, index) => {
-                    const li = document.createElement('li');
-                    li.className = 'leaderboard-item';
-                    li.innerHTML = `<span>${index + 1}. ${user.name}</span> <strong>${user.points} نقطة</strong>`;
-                    listEl.appendChild(li);
+            const data = snapshot.val() || {};
+            const points = data.points || 0;
+            if (points >= cost) {
+                update(userRef, {
+                    points: increment(-cost),
+                    allowedLinks: increment(1)
                 });
+                showMsg("تمت زيادة حصة الروابط الخاصة بك بنجاح! 🚀");
             } else {
-                listEl.innerHTML = '<li class="leaderboard-item"><span>لا توجد بيانات بعد</span><span>0</span></li>';
+                alert(`عذراً، رصيدك الحالي (${points} نقطة) لا يكفي لزيادة الحصة. تحتاج إلى ${cost} نقطة.`);
             }
+        }, { onlyOnce: true });
+    };
+
+    // تفعيل وضع المطور بالاسم (حسين خالد) والرابط (000123)
+    window.checkDevMode = function() {
+        const title = document.getElementById('matchTitle').value.trim();
+        const url = document.getElementById('streamUrl').value.trim();
+        const devPanel = document.getElementById('devPanel');
+        const normalBox = document.getElementById('normalPlanBox');
+
+        if (title === "حسين خالد" && url === "000123") {
+            devPanel.style.display = "block";
+            normalBox.style.display = "none";
+        } else {
+            devPanel.style.display = "none";
+            normalBox.style.display = "block";
+        }
+    };
+
+    // نشر مجاني عبر وضع المطور بدون قيود ولا نقاط
+    window.publishFreeMatch = function() {
+        const realTitle = prompt("أدخل اسم المباراة أو الحدث الجديد:");
+        const realImg = document.getElementById('matchImg').value.trim();
+        const realUrl = prompt("أدخل رابط البث أو رابط الـ IPTV المباشر:");
+
+        if (!realTitle || !realUrl) {
+            alert("يرجى إدخال اسم المباراة ورابط البث على الأقل!");
+            return;
+        }
+
+        const matchesRef = ref(db, 'matches');
+        push(matchesRef, { 
+            title: realTitle, 
+            img: realImg, 
+            url: realUrl, 
+            plan: "مطور أساسي ⚡", 
+            timestamp: Date.now() 
+        }).then(() => {
+            showMsg("تم نشر المباراة مجاناً بنجاح عبر وضع المطور!");
+            document.getElementById('matchTitle').value = '';
+            document.getElementById('matchImg').value = '';
+            document.getElementById('streamUrl').value = '';
+            checkDevMode();
         });
-    </script>
+    };
+
+    // النشر النظامي بالنقاط وفحص حصة الروابط المسموحة
+    window.publishMatch = function() {
+        const title = document.getElementById('matchTitle').value.trim();
+        const img = document.getElementById('matchImg').value.trim();
+        const url = document.getElementById('streamUrl').value.trim();
+        const plan = document.getElementById('planSelect').value;
+
+        let cost = 10;
+        if (plan === 'week') cost = 15;
+        if (plan === 'month') cost = 50;
+
+        if (!title || !url) {
+            alert("يرجى إدخال اسم المباراة ورابط البث المباشر!");
+            return;
+        }
+
+        onValue(userRef, (snapshot) => {
+            const data = snapshot.val() || {};
+            const points = data.points || 0;
+            const allowedLinks = data.allowedLinks || 1;
+            const currentLinks = data.currentLinks || 0;
+
+            if (currentLinks >= allowedLinks) {
+                alert("لقد وصلت للحد الأقصى المسموح به من الروابط! قم بشراء حصة روابط إضافية بالنقاط لتتمكن من النشر.");
+                return;
+            }
+
+            if (points < cost) {
+                alert(`عذراً، رصيدك (${points} نقطة) لا يكفي لتغطية تكلفة هذه الخطة (${cost} نقطة).`);
+                return;
+            }
+
+            // خصم النقاط وزيادة عداد الروابط المستخدمة ونشر الحدث
+            update(userRef, { 
+                points: increment(-cost),
+                currentLinks: increment(1)
+            }).then(() => {
+                const matchesRef = ref(db, 'matches');
+                push(matchesRef, { title, img, url, plan, timestamp: Date.now() });
+                showMsg("تم نشر الرابط بنجاح وخصم التكلفة من رصيدك!");
+                document.getElementById('matchTitle').value = '';
+                document.getElementById('matchImg').value = '';
+                document.getElementById('streamUrl').value = '';
+            });
+        }, { onlyOnce: true });
+    };
+
+    function showMsg(txt) {
+        const msgEl = document.getElementById('msg');
+        msgEl.innerText = txt;
+        setTimeout(() => msgEl.innerText = '', 4000);
+    }
+
+    // عرض القائمة المحدثة مع دعم تشغيل روابط الـ IPTV والفيديو
+    const matchesRef = ref(db, 'matches');
+    onValue(matchesRef, (snapshot) => {
+        const list = document.getElementById('matchesList');
+        list.innerHTML = '';
+        const data = snapshot.val();
+        
+        if (data) {
+            Object.values(data).reverse().forEach(match => {
+                let div = document.createElement('div');
+                div.className = 'match-card';
+                div.innerHTML = `
+                    <h3>⚽ ${match.title}</h3>
+                    ${match.img ? `<img src="${match.img}" class="match-poster" onerror="this.style.display='none'">` : ''}
+                    <p style="font-size: 12px; color: var(--accent); margin-bottom: 6px;">نوع النشر: ${match.plan}</p>
+                    <video controls playsinline>
+                        <source src="${match.url}" type="application/x-mpegURL">
+                        <source src="${match.url}" type="video/mp4">
+                        متصفحك لا يدعم تشغيل مصدر البث أو رابط الـ IPTV هذا مباشرة.
+                    </video>
+                `;
+                list.appendChild(div);
+            });
+        } else {
+            list.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">لا توجد بثوث أو مباريات متاحة حالياً.</p>';
+        }
+    });
+</script>
+
 </body>
 </html>
