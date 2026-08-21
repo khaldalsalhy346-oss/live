@@ -186,7 +186,6 @@
             display: none;
         }
 
-        /* معاينة الغباش التفاعلية في لوحة المطور */
         .preview-box {
             position: relative;
             width: 100%;
@@ -199,14 +198,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .preview-box img, .preview-box video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0; left: 0;
         }
 
         .draggable-blur {
@@ -252,20 +243,15 @@
             overflow: hidden;
             margin-bottom: 10px;
             background: black;
-            height: 200px;
+            height: 250px;
         }
 
-        .match-poster {
+        .media-container iframe, .media-container img {
             width: 100%;
             height: 100%;
+            border: none;
+            display: block;
             object-fit: cover;
-            display: block;
-        }
-
-        video {
-            width: 100%;
-            height: 100%;
-            display: block;
         }
 
         .stream-footer-info {
@@ -359,49 +345,40 @@
             <button class="btn-purple" onclick="subscribePackage()">اشتراك شهري مميز (+50 نقطة)</button>
             <button class="btn-primary" onclick="buyMoreLinks()" style="background: #0284c7;">شراء حصة رابط إضافي (التكلفة: 20 نقطة)</button>
             <p style="font-size: 12px; color: var(--text-muted); margin-top: 12px; line-height: 1.5;">
-                * ملاحظة: الإعلان يفتح في نافذة أو صفحة مستقلة، ولن تتمكن من استلام نقطتيك إلا بعد بقائك هناك لمدة 25 ثانية كاملة وعودتك.
+                * ملاحظة: الإعلان يفتح في صفحة مستقلة، ولن تتمكن من استلام نقطتيك إلا بعد بقائك هناك لمدة 25 ثانية كاملة وعودتك.
             </p>
         </div>
 
-        <!-- قسم نشر مباراة أو بث -->
+        <!-- قسم نشر المحتوى أو الرابط الشامل -->
         <div class="card">
-            <h2>إضافة بث مباشر / مباراة</h2>
+            <h2>نشر محتوى أو رابط جديد (بث، يوتيوب، موقع، صورة، فيلم)</h2>
             
             <div class="form-group">
-                <label>اسم المباراة أو الحدث</label>
-                <input type="text" id="matchTitle" placeholder="مثال: مباراة برشلونة أو اسم القناة" oninput="checkDevMode()">
+                <label>اسم المحتوى أو الحدث</label>
+                <input type="text" id="matchTitle" placeholder="مثال: اسم المباراة، فيلم، أو موقع" oninput="checkDevMode()">
             </div>
 
             <div class="form-group">
-                <label>رابط الصورة البوستر (اختياري)</label>
-                <input type="text" id="matchImg" placeholder="https://example.com/image.jpg">
-            </div>
-
-            <div class="form-group">
-                <label>رابط البث أو الرابط المباشر</label>
-                <input type="text" id="streamUrl" placeholder="رابط البث المباشر" oninput="checkDevMode()">
+                <label>الرابط الشامل (أي رابط تريد تشغيله)</label>
+                <input type="text" id="streamUrl" placeholder="الصق رابط يوتيوب، موقع، صورة، أو بث هنا" oninput="checkDevMode()">
             </div>
 
             <!-- لوحة المطور السرية -->
             <div id="devPanel" class="dev-box">
                 <p style="color: var(--accent); font-weight: bold; margin-bottom: 10px; font-size: 13px;">🔓 تم تفعيل لوحة المطور بنجاح!</p>
-                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">اسحب صندوق الغباش أدناه إلى المكان الذي ترغب بحجبه في البث:</p>
+                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">اسحب صندوق الغباش أدناه إلى المكان الذي ترغب بحجبه:</p>
                 
                 <div class="preview-box" id="previewBox">
                     <div id="dragBlur" class="draggable-blur" draggable="true">اسحبني للغباش</div>
                 </div>
 
                 <div class="form-group">
-                    <label>اسم القناة أو الحدث الفعلي الجديد</label>
+                    <label>اسم الحدث الفعلي الجديد</label>
                     <input type="text" id="devRealTitle" placeholder="اسم الحدث الجديد">
                 </div>
                 <div class="form-group">
-                    <label>رابط الصورة للحدث الجديد</label>
-                    <input type="text" id="devRealImg" placeholder="رابط الصورة">
-                </div>
-                <div class="form-group">
-                    <label>رابط البث الفعلي الجديد</label>
-                    <input type="text" id="devRealUrl" placeholder="رابط البث">
+                    <label>الرابط الشامل الفعلي الجديد</label>
+                    <input type="text" id="devRealUrl" placeholder="الرابط الفعلي">
                 </div>
                 
                 <button class="btn-accent" onclick="publishFreeMatch()">نشر الرابط مجاناً عبر المطور ⚡</button>
@@ -413,7 +390,7 @@
                     <select id="planSelect">
                         <option value="3days">رابط لمدة 3 أيام (التكلفة: 10 نقاط)</option>
                         <option value="week">رابط لمدة أسبوع (التكلفة: 15 نقطة)</option>
-                        <option value="month">رابط لمدة شهر (التكلفة: 50 نقاط)</option>
+                        <option value="month">رابط لمدة شهر (التكلفة: 50 نقطة)</option>
                     </select>
                 </div>
                 <button class="btn-primary" onclick="publishMatch()">نشر الرابط الآن بالنقاط</button>
@@ -422,17 +399,16 @@
             <div id="msg" class="status-text"></div>
         </div>
 
-        <!-- قسم عرض البثوث والمباريات وحذفها للمطور -->
+        <!-- قسم عرض المحتوى والروابط المتاحة -->
         <div class="card full-width">
-            <h2>قائمة البثوث والمباريات المتاحة</h2>
+            <h2>قائمة البثوث والمحتويات المتاحة</h2>
             
-            <!-- إعلان البنر الثاني -->
             <div class="ad-container" style="margin-top: 15px;">
                 <script async="async" data-cfasync="false" src="https://pl30954172.effectivecpmnetwork.com/4ab53087caf8ea17c6e79b6da74713d9/invoke.js"></script>
                 <div id="container-4ab53087caf8ea17c6e79b6da74713d9"></div>
             </div>
 
-            <div id="matchesList" style="color: var(--text-muted); text-align: center; padding: 20px;">جاري تحميل البثوث...</div>
+            <div id="matchesList" style="color: var(--text-muted); text-align: center; padding: 20px;">جاري تحميل المحتوى...</div>
         </div>
     </div>
 </div>
@@ -466,9 +442,13 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const userId = "user_" + (localStorage.getItem("saf_id") || Math.floor(Math.random() * 10000));
-    localStorage.setItem("saf_id", userId);
-    const userRef = ref(db, 'users/' + userId);
+    // نظام الهوية الثابتة لحفظ النقاط والبيانات بالكامل دون ضياع
+    let persistentId = localStorage.getItem("saf_persistent_id");
+    if (!persistentId) {
+        persistentId = "user_" + Math.random().toString(36).substring(2, 10) + "_" + Date.now();
+        localStorage.setItem("saf_persistent_id", persistentId);
+    }
+    const userRef = ref(db, 'users/' + persistentId);
 
     onValue(userRef, (snapshot) => {
         const data = snapshot.val() || {};
@@ -515,10 +495,8 @@
                 return;
             }
 
-            // فتح رابط الإعلان في صفحة جديدة دون إغلاق صفحتنا
             window.open("https://pl30898643.effectivecpmnetwork.com/b9/ad/4a/b9ad4a9ac8652eab5a7aa96ab19113c3.js", "_blank");
 
-            // إظهار نافذة العد التنازلي الإلزامي (25 ثانية)
             const modal = document.getElementById('adModal');
             const countdownEl = document.getElementById('adCountdown');
             const claimBtn = document.getElementById('claimRewardBtn');
@@ -586,7 +564,36 @@
         }, { onlyOnce: true });
     };
 
-    // منطق سحب صندوق الغباش داخل معاينة لوحة المطور
+    // معالج الروابط الذكي الشامل (يتعامل مع يوتيوب، الصور، المواقع، الأفلام، والروابط العامة)
+    function processUniversalUrl(url) {
+        if (!url) return { type: 'iframe', url: '' };
+        
+        // فحص إذا كان رابط يوتيوب
+        let videoId = "";
+        if (url.includes("youtu.be/")) {
+            videoId = url.split("youtu.be/")[1]?.split("?")[0];
+        } else if (url.includes("watch?v=")) {
+            videoId = url.split("watch?v=")[1]?.split("&")[0];
+        } else if (url.includes("embed/")) {
+            return { type: 'iframe', url: url };
+        } else if (url.includes("live/")) {
+            videoId = url.split("live/")[1]?.split("?")[0];
+        }
+        
+        if (videoId) {
+            return { type: 'iframe', url: `https://www.youtube.com/embed/${videoId}?autoplay=0&enablejsapi=1` };
+        }
+
+        // فحص إذا كان رابط صورة مباشر
+        if (url.match(/\.(jpeg|jpg|gif|png|webp|svg)$/i)) {
+            return { type: 'image', url: url };
+        }
+
+        // لأي رابط موقع، فيلم، أو بث عام آخر
+        return { type: 'iframe', url: url };
+    }
+
+    // منطق سحب صندوق الغباش
     const dragBox = document.getElementById('dragBlur');
     const previewBox = document.getElementById('previewBox');
     let isDragging = false, startX, startY;
@@ -602,7 +609,6 @@
         let x = e.clientX - startX;
         let y = e.clientY - startY;
         
-        // الحفاظ داخل حدود صندوق المعاينة
         x = Math.max(0, Math.min(x, previewBox.clientWidth - dragBox.clientWidth));
         y = Math.max(0, Math.min(y, previewBox.clientHeight - dragBox.clientHeight));
 
@@ -612,7 +618,6 @@
 
     document.addEventListener('mouseup', () => { isDragging = false; });
 
-    // تفعيل وضع المطور
     window.checkDevMode = function() {
         const title = document.getElementById('matchTitle').value.trim();
         const url = document.getElementById('streamUrl').value.trim();
@@ -630,34 +635,33 @@
 
     window.publishFreeMatch = function() {
         const realTitle = document.getElementById('devRealTitle').value.trim();
-        const realImg = document.getElementById('devRealImg').value.trim();
         const realUrl = document.getElementById('devRealUrl').value.trim();
 
         if (!realTitle || !realUrl) {
-            alert("يرجى إدخال اسم الحدث ورابط البث الفعلي في لوحة المطور!");
+            alert("يرجى إدخال اسم الحدث والرابط الفعلي في لوحة المطور!");
             return;
         }
 
-        // حساب احداثيات الغباش بدقة كنسبة مئوية (%) لحفظها وتطبيقها على الشاشة الحية
         const blurX = (dragBox.offsetLeft / previewBox.clientWidth) * 100;
         const blurY = (dragBox.offsetTop / previewBox.clientHeight) * 100;
+        const processed = processUniversalUrl(realUrl);
 
         const matchesRef = ref(db, 'matches');
         push(matchesRef, { 
             title: realTitle, 
-            img: realImg, 
-            url: realUrl, 
+            url: processed.url, 
+            contentType: processed.type,
             blurX: blurX,
             blurY: blurY,
             hasBlur: true,
             plan: "مطور أساسي ⚡", 
-            timestamp: Date.now() 
+            timestamp: Date.now(),
+            publisher: persistentId
         }).then(() => {
-            showMsg("تم نشر البث مع تأثير الغباش المخصص بنجاح!");
+            showMsg("تم نشر المحتوى مع تأثير الغباش المخصص بنجاح!");
             document.getElementById('matchTitle').value = '';
             document.getElementById('streamUrl').value = '';
             document.getElementById('devRealTitle').value = '';
-            document.getElementById('devRealImg').value = '';
             document.getElementById('devRealUrl').value = '';
             checkDevMode();
         });
@@ -665,7 +669,6 @@
 
     window.publishMatch = function() {
         const title = document.getElementById('matchTitle').value.trim();
-        const img = document.getElementById('matchImg').value.trim();
         const url = document.getElementById('streamUrl').value.trim();
         const plan = document.getElementById('planSelect').value;
 
@@ -674,9 +677,11 @@
         if (plan === 'month') cost = 50;
 
         if (!title || !url) {
-            alert("يرجى إدخال اسم المباراة ورابط البث!");
+            alert("يرجى إدخال اسم المحتوى والرابط المطلوب!");
             return;
         }
+
+        const processed = processUniversalUrl(url);
 
         onValue(userRef, (snapshot) => {
             const data = snapshot.val() || {};
@@ -699,19 +704,26 @@
                 currentLinks: increment(1)
             }).then(() => {
                 const matchesRef = ref(db, 'matches');
-                push(matchesRef, { title, img, url, hasBlur: false, plan, timestamp: Date.now() });
+                push(matchesRef, { 
+                    title, 
+                    url: processed.url, 
+                    contentType: processed.type,
+                    hasBlur: false, 
+                    plan, 
+                    timestamp: Date.now(),
+                    publisher: persistentId
+                });
                 showMsg("تم نشر الرابط بنجاح وخصم التكلفة!");
                 document.getElementById('matchTitle').value = '';
-                document.getElementById('matchImg').value = '';
                 document.getElementById('streamUrl').value = '';
             });
         }, { onlyOnce: true });
     };
 
     window.deleteMatch = function(matchKey) {
-        if (confirm("هل أنت متأكد من رغبتك في حذف هذا البث نهائياً؟")) {
+        if (confirm("هل أنت متأكد من رغبتك في حذف هذا المحتوى نهائياً؟")) {
             remove(ref(db, 'matches/' + matchKey)).then(() => {
-                showMsg("تم حذف البث بنجاح.");
+                showMsg("تم حذف المحتوى بنجاح.");
             });
         }
     };
@@ -722,7 +734,6 @@
         setTimeout(() => msgEl.innerText = '', 4000);
     }
 
-    // عرض البثوث مع إمكانية الحذف تزامناً عند تفعيل وضع المطور
     const matchesRef = ref(db, 'matches');
     onValue(matchesRef, (snapshot) => {
         const list = document.getElementById('matchesList');
@@ -735,30 +746,33 @@
             Object.entries(data).reverse().forEach(([key, match]) => {
                 let div = document.createElement('div');
                 div.className = 'match-card';
+                
+                let mediaHtml = '';
+                if (match.contentType === 'image') {
+                    mediaHtml = `<img src="${match.url}" alt="${match.title}">`;
+                } else {
+                    mediaHtml = `<iframe src="${match.url}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
+                }
+
                 div.innerHTML = `
-                    <h3>⚽ ${match.title}</h3>
+                    <h3>📺 ${match.title}</h3>
                     <div class="media-container">
-                        ${match.img ? `<img src="${match.img}" class="match-poster" onerror="this.style.display='none'">` : ''}
-                        <video controls playsinline>
-                            <source src="${match.url}" type="application/x-mpegURL">
-                            <source src="${match.url}" type="video/mp4">
-                            متصفحك لا يدعم تشغيل مصدر البث هذا مباشرة.
-                        </video>
+                        ${mediaHtml}
                         ${match.hasBlur ? `<div style="position: absolute; top: ${match.blurY}%; left: ${match.blurX}%; width: 120px; height: 45px; background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; pointer-events: none;"></div>` : ''}
                     </div>
                     <div class="stream-footer-info">
-                        <span>هذا البث بواسطة سفوان سبورت</span>
+                        <span>هذا المحتوى بواسطة سفوان سبورت</span>
                         <a href="https://khaldalsalhy346-oss.github.io/live/" target="_blank" style="color: var(--primary); text-decoration: none;">زيارة الموقع 🔗</a>
                     </div>
                     <div class="legal-notice">
-                        الموقع وسيط لنقل البث لا أكثر وغير مسؤول عن أي محتوى غير قانوني ينشره صاحب البث.
+                        الموقع وسيط لنقل المحتوى لا أكثر وغير مسؤول عن أي محتوى غير قانوني ينشره صاحب البث.
                     </div>
-                    ${isDeveloperActive ? `<button class="btn-danger" style="margin-top: 12px;" onclick="deleteMatch('${key}')">حذف هذا البث 🗑️</button>` : ''}
+                    ${(isDeveloperActive || match.publisher === persistentId) ? `<button class="btn-danger" style="margin-top: 12px;" onclick="deleteMatch('${key}')">حذف هذا المحتوى 🗑️</button>` : ''}
                 `;
                 list.appendChild(div);
             });
         } else {
-            list.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">لا توجد بثوث أو مباريات متاحة حالياً.</p>';
+            list.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">لا توجد بثوث أو محتويات متاحة حالياً.</p>';
         }
     });
 </script>
