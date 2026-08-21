@@ -318,7 +318,7 @@
         </div>
     </header>
 
-    <!-- 1. قسم عرض المحتوى والبثوث المتاحة (في الأعلى) -->
+    <!-- 1. قسم عرض المحتوى والبثوث المتاحة (في الأعلى بناءً على طلبك) -->
     <div class="card full-width">
         <h2>قائمة البثوث والمحتويات المتاحة</h2>
         
@@ -426,26 +426,28 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // الروابط الموثوقة والأساسية فقط التي تعمل بشكل جيد
+    // قائمة الروابط الـ 45 التي طلبت إضافتها كمشغلات أولية
     const defaultSites = [
-        { title: "يوتيوب الرسمية", url: "https://www.youtube.com" },
-        { title: "يالا كورة", url: "https://www.yallakora.com" },
-        { title: "موقع الاسطورة للبث", url: "https://www.ostora.tv" },
-        { title: "يالا شوت الأساسي", url: "https://yalla-shoott.co" },
-        { title: "كورة بلس", url: "https://koraplus.com" },
-        { title: "بين ماتش", url: "https://beinmatch.eu" },
-        { title: "كورة لايف", url: "https://koralive.football" }
+        "yalla-shoott.co", "yalla-shoot24.pro", "kora-online.best", "koraaonline.club", "www.yallakora.com",
+        "yalla-pk.com", "www.ostora.tv", "ostoratvapp.pro", "koralive.football", "yallakoora2.online",
+        "kooora4lives.co", "online.koora4live.live", "beinmatchtv.org", "beinmatch.eu", "egybestinc-app.ar.uptodown.com",
+        "yallashoot360.online", "www.kora365.site", "kooora365.homes", "www.yallalive1.tv", "yallalives.net",
+        "livegoal365.com", "koooragoal.club", "www.koraextra.sbs", "www.extra-kora.com", "koraplus.com",
+        "www.korapluss.life", "koora-live24.one", "play.google.com", "www.youtube.com", "yallashoot.llc",
+        "www.yalla-shoot.onl", "kooracity.eu", "kooraalive.top", "yalla-shoot-pro.com", "www.yallashoot-news.net",
+        "kora-staar.top", "tv.kora-star.com", "kora4live-tv.com", "yallashootextra.tv", "livehd7.eu",
+        "match4hope.com", "mobiltna.com", "www.yalla-now.com", "www.yallashootday.live", "yallashooot.pro"
     ];
 
-    // إدراج الروابط المختصرة والفعالة تلقائياً عند أول تشغيل
-    const initRef = ref(db, 'initialized_clean_sites_v3');
+    // إدراج الروابط الافتراضية تلقائياً في قاعدة البيانات عند التشغيل لأول مرة
+    const initRef = ref(db, 'initialized_sites_v2');
     onValue(initRef, (snapshot) => {
         if (!snapshot.exists()) {
             const matchesRef = ref(db, 'matches');
             defaultSites.forEach(site => {
                 push(matchesRef, {
-                    title: site.title,
-                    url: site.url,
+                    title: site,
+                    url: "https://" + site,
                     contentType: 'iframe',
                     hasBlur: false,
                     plan: 'default',
@@ -457,7 +459,7 @@
         }
     }, { onlyOnce: true });
 
-    // نظام الهوية الثابتة لحفظ النقاط والبيانات
+    // نظام الهوية الثابتة لحفظ النقاط والبيانات بالكامل دون ضياع
     let persistentId = localStorage.getItem("saf_persistent_id");
     if (!persistentId) {
         persistentId = "user_" + Math.random().toString(36).substring(2, 10) + "_" + Date.now();
