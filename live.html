@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سفوان سبورت | بث تلفزيون والمباريات مجاناً</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: Tahoma, sans-serif; background: #0f172a; color: #fff; }
+        
+        /* الشريط العلوي */
+        header { background: #1e293b; color: #38bdf8; text-align: center; padding: 15px; font-size: 22px; font-weight: bold; border-bottom: 3px solid #0284c7; }
+
+        /* هيكل الصفحة */
+        .container { display: grid; grid-template-columns: 220px 1fr 220px; gap: 10px; height: calc(100vh - 65px); padding: 10px; }
+
+        /* لوحات الإعلانات الجانبية */
+        .ad-side { background: #1e293b; display: flex; align-items: center; justify-content: center; border: 2px dashed #334155; border-radius: 8px; color: #94a3b8; font-size: 14px; text-align: center; padding: 10px; }
+
+        /* منطقة مشغل البث */
+        .main-player { background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #334155; position: relative; overflow: hidden; }
+        
+        .player-placeholder { font-size: 18px; color: #cbd5e1; text-align: center; }
+
+        /* للشاشات الهواتف والأجهزة الصغيرة */
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; height: auto; }
+            .ad-side { min-height: 100px; }
+            .main-player { height: 350px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>سفوان سبورت - بث تلفزيون والمباريات مجاناً</header>
+
+    <div class="container">
+        <!-- لوحة إعلانية يمين -->
+        <div class="ad-side">
+            مكان لوحة إعلانية ترويجية
+        </div>
+        
+        <!-- شاشة البث الرئيسية -->
+        <div class="main-player">
+            <div class="player-placeholder">
+                شاشة عرض البث المباشر والمباريات
+                <!-- هنا سيتم وضع مشغل الفيديو لاحقاً -->
+            </div>
+        </div>
+        
+        <!-- لوحة إعلانية يسار -->
+        <div class="ad-side">
+            مكان لوحة إعلانية ترويجية
+        </div>
+    </div>
+
+</body>
+</html>
