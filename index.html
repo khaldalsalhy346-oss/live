@@ -15,18 +15,25 @@
         .container { display: grid; grid-template-columns: 220px 1fr 220px; gap: 10px; height: calc(100vh - 65px); padding: 10px; }
 
         /* لوحات الإعلانات الجانبية */
-        .ad-side { background: #1e293b; display: flex; align-items: center; justify-content: center; border: 2px dashed #334155; border-radius: 8px; color: #94a3b8; font-size: 14px; text-align: center; padding: 10px; }
+        .ad-side { background: #1e293b; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #334155; border-radius: 8px; color: #94a3b8; font-size: 14px; text-align: center; padding: 10px; }
 
-        /* منطقة مشغل البث */
-        .main-player { background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #334155; position: relative; overflow: hidden; }
+        /* منطقة مشغل البث ولوحة التحكم */
+        .main-player { background: #000; display: flex; flex-direction: column; align-items: center; justify-content: space-between; border-radius: 8px; border: 1px solid #334155; padding: 20px; overflow-y: auto; }
         
-        .player-placeholder { font-size: 18px; color: #cbd5e1; text-align: center; }
+        .panel-box { background: #1e293b; width: 100%; max-width: 600px; padding: 20px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #334155; }
+        .panel-box h3 { margin-top: 0; color: #38bdf8; font-size: 18px; border-bottom: 1px solid #334155; padding-bottom: 8px; }
+        
+        button { background: #0284c7; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; margin: 5px 0; width: 100%; }
+        button:hover { background: #0284f4; }
+        button:disabled { background: #475569; cursor: not-allowed; }
+        
+        input, select { width: 100%; padding: 10px; margin: 8px 0; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 5px; }
 
-        /* للشاشات الهواتف والأجهزة الصغيرة */
+        .stats { display: flex; justify-content: space-between; font-weight: bold; color: #facc15; margin-bottom: 15px; background: #0f172a; padding: 10px; border-radius: 5px; }
+
         @media (max-width: 900px) {
             .container { grid-template-columns: 1fr; height: auto; }
             .ad-side { min-height: 100px; }
-            .main-player { height: 350px; }
         }
     </style>
 </head>
@@ -37,22 +44,171 @@
     <div class="container">
         <!-- لوحة إعلانية يمين -->
         <div class="ad-side">
-            مكان لوحة إعلانية ترويجية
+            <span>لوحة إعلانية يمين</span>
         </div>
         
-        <!-- شاشة البث الرئيسية -->
+        <!-- المنطقة الوسطى (لوحة التحكم والنظام) -->
         <div class="main-player">
-            <div class="player-placeholder">
-                شاشة عرض البث المباشر والمباريات
-                <!-- هنا سيتم وضع مشغل الفيديو لاحقاً -->
+            <div class="panel-box">
+                <div class="stats">
+                    <span>نقاطك: <span id="user-points">0</span> نقطة</span>
+                    <span>حالة البث: <span id="sub-status" style="color: #ef4444;">غير مفعل</span></span>
+                </div>
+                
+                <!-- قسم جمع النقاط عبر الإعلانات -->
+                <h3>ربح النقاط (مشاهدة إعلانات)</h3>
+                <p style="font-size: 13px; color: #94a3b8;">كل إعلان = 2 نقطة (متاح 3 إعلانات كل 4 ساعات)</p>
+                <button onclick="watchAd()">مشاهدة إعلان (+2 نقطة)</button>
+                <div id="ad-timer" style="font-size: 12px; color: #facc15; margin-top: 5px; text-align: center;"></div>
+            </div>
+
+            <!-- قسم تفعيل البث الأساسي -->
+            <div class="panel-box">
+                <h3>تفعيل البث الأساسي (رابط واحد)</h3>
+                <input type="text" id="stream-url" placeholder="أدخل رابط البث المباشر (M3U8 / MP4)">
+                <select id="sub-duration">
+                    <option value="3days">3 أيام (10 نقاط)</option>
+                    <option value="week">أسبوع (15 نقطة)</option>
+                    <option value="month">شهر (50 نقطة)</option>
+                </select>
+                <button onclick="activateSubscription()">تفعيل البث الأساسي</button>
+            </div>
+
+            <!-- قسم زيادة السعة (10 روابط) -->
+            <div class="panel-box">
+                <h3>ترقية السعة (حتى 10 روابط إضافية)</h3>
+                <p style="font-size: 13px; color: #94a3b8;">يشترط وجود تفعيل أساسي نشط مسبقاً</p>
+                <select id="extra-duration">
+                    <option value="month10">لمدة شهر (25 نقطة)</option>
+                    <option value="months7">لمدة 7 أشهر (200 نقطة)</option>
+                </select>
+                <button onclick="activateExtraSlots()" style="background: #10b981;">تفعيل زيادة الروابط</button>
             </div>
         </div>
         
         <!-- لوحة إعلانية يسار -->
         <div class="ad-side">
-            مكان لوحة إعلانية ترويجية
+            <span>لوحة إعلانية يسار</span>
         </div>
     </div>
+
+<script>
+    // نظام التخزين المحلي لتجربة النقاط والاشتراكات
+    let userData = JSON.parse(localStorage.getItem('safwan_user')) || {
+        points: 0,
+        adsWatched: 0,
+        lastAdTime: 0,
+        subActive: false,
+        subExpiry: 0,
+        extraActive: false,
+        extraExpiry: 0,
+        url: ''
+    };
+
+    function updateUI() {
+        document.getElementById('user-points').innerText = userData.points;
+        const now = new Date().getTime();
+        
+        // التحقق من انتهاء الاشتراكات
+        if (userData.subActive && now > userData.subExpiry) {
+            userData.subActive = false;
+            userData.extraActive = false; // إذا انتهى الأساسي ينتهي الإضافي تلقائياً
+        }
+        if (userData.extraActive && now > userData.extraExpiry) {
+            userData.extraActive = false;
+        }
+
+        const statusEl = document.getElementById('sub-status');
+        if (userData.subActive) {
+            statusEl.innerText = userData.extraActive ? "مفعل (أساسي + 10 روابط)" : "مفعل (رابط أساسي)";
+            statusEl.style.color = "#10b981";
+        } else {
+            statusEl.innerText = "غير مفعل";
+            statusEl.style.color = "#ef4444";
+        }
+        
+        localStorage.setItem('safwan_user', JSON.stringify(userData));
+    }
+
+    function watchAd() {
+        const now = new Date().getTime();
+        const fourHours = 4 * 60 * 60 * 1000;
+
+        // إعادة تعيين العداد كل 4 ساعات
+        if (now - userData.lastAdTime > fourHours) {
+            userData.adsWatched = 0;
+        }
+
+        if (userData.adsWatched >= 3) {
+            alert("لقد استنفدت الحد الأقصى لمشاهدة الإعلانات (3 إعلانات). يرجى الانتظار حتى انتهاء الـ 4 ساعات.");
+            return;
+        }
+
+        // محاكاة مشاهدة إعلان لمدة ثانية
+        alert("جاري عرض الإعلان... (تمت المشاهدة بنجاح!)");
+        userData.points += 2;
+        userData.adsWatched++;
+        userData.lastAdTime = now;
+        updateUI();
+    }
+
+    function activateSubscription() {
+        const url = document.getElementById('stream-url').value.trim();
+        const duration = document.getElementById('sub-duration').value;
+        
+        if (!url) {
+            alert("يرجى إدخال رابط البث أولاً!");
+            return;
+        }
+
+        let cost = 0;
+        let days = 0;
+        if (duration === '3days') { cost = 10; days = 3; }
+        else if (duration === 'week') { cost = 15; days = 7; }
+        else if (duration === 'month') { cost = 50; days = 30; }
+
+        if (userData.points < cost) {
+            alert("عذراً، لا توجد نقاط كافية لديك. قم بمشاهدة الإعلانات لجمع النقاط!");
+            return;
+        }
+
+        userData.points -= cost;
+        userData.subActive = true;
+        userData.url = url;
+        userData.subExpiry = new Date().getTime() + (days * 24 * 60 * 60 * 1000);
+        
+        alert("تم تفعيل البث الأساسي بنجاح!");
+        updateUI();
+    }
+
+    function activateExtraSlots() {
+        if (!userData.subActive) {
+            alert("لا يمكنك تفعيل زيادة الروابط إلا إذا كان لديك تفعيل أساسي نشط أولاً!");
+            return;
+        }
+
+        const duration = document.getElementById('extra-duration').value;
+        let cost = 0;
+        let days = 0;
+        if (duration === 'month10') { cost = 25; days = 30; }
+        else if (duration === 'months7') { cost = 200; days = 210; } // 7 أشهر تقريبا
+
+        if (userData.points < cost) {
+            alert("عذراً، نقاطك غير كافية لتفعيل زيادة الروابط.");
+            return;
+        }
+
+        userData.points -= cost;
+        userData.extraActive = true;
+        userData.extraExpiry = new Date().getTime() + (days * 24 * 60 * 60 * 1000);
+
+        alert("تم تفعيل ميزة الـ 10 روابط بنجاح!");
+        updateUI();
+    }
+
+    // تشغيل التحديث عند فتح الصفحة
+    updateUI();
+</script>
 
 </body>
 </html>
