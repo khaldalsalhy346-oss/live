@@ -13,7 +13,7 @@
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
 
     <!-- كود البار الاجتماعي -->
-    <script src="https://pl30898643.effectivecpmnetwork.com/b9/ad/4a/b9ad4a9ac8652eab5a7aa96ab19113c3.js"></script>
+    <script id="socialBarScript" src="https://pl30898643.effectivecpmnetwork.com/b9/ad/4a/b9ad4a9ac8652eab5a7aa96ab19113c3.js"></script>
 
     <style>
         :root {
@@ -329,7 +329,8 @@
     <div class="card full-width">
         <h2>قائمة البثوث والقنوات الرياضية المباشرة (M3U)</h2>
         
-        <div class="ad-container" style="margin-top: 15px;">
+        <!-- قسم الإعلان البنري الأول -->
+        <div class="ad-container ad-element-box" style="margin-top: 15px;">
             <script async="async" data-cfasync="false" src="https://pl30954172.effectivecpmnetwork.com/4ab53087caf8ea17c6e79b6da74713d9/invoke.js"></script>
             <div id="container-4ab53087caf8ea17c6e79b6da74713d9"></div>
         </div>
@@ -337,9 +338,9 @@
         <div id="matchesList" style="color: var(--text-muted); text-align: center; padding: 20px;">جاري تحميل القنوات الرياضية من القائمة...</div>
     </div>
 
-    <!-- 2. قسم الإعلانات وإدارة النقاط -->
+    <!-- 2. قسم الإعلانات وإدارة النقاط وإزالة الإعلانات -->
     <div class="card full-width">
-        <h2>إدارة النقاط وحصة الروابط والإعلانات</h2>
+        <h2>إدارة النقاط وحصة الروابط وإزالة الإعلانات</h2>
         <div style="display: flex; flex-direction: column; gap: 10px; max-width: 400px; margin: 0 auto;">
             <button class="btn-accent" id="watchAdBtn" onclick="openAdSafely()">مشاهدة إعلان (+2 نقاط)</button>
             <p id="adTimerText" style="font-size: 12px; color: var(--text-muted); text-align: center;"></p>
@@ -347,8 +348,19 @@
             <button class="btn-purple" onclick="subscribePackage()">اشتراك شهري مميز (+50 نقطة)</button>
             <button class="btn-primary" onclick="buyMoreLinks()" style="background: #0284c7;">شراء حصة رابط إضافي (التكلفة: 20 نقطة)</button>
         </div>
+
+        <!-- خانة مستقلة لإزالة الإعلانات بكلمة السر -->
+        <div style="margin-top: 25px; border-top: 1px solid var(--border); padding-top: 15px; max-width: 400px; margin-left: auto; margin-right: auto;">
+            <label style="color: var(--accent); font-weight: bold; margin-bottom: 5px;">🌟 تفعيل اشتراك إزالة الإعلانات (16 ساعة)</label>
+            <div style="display: flex; gap: 8px;">
+                <input type="password" id="noAdsCodeInput" placeholder="أدخل كلمة السر هنا..." style="flex: 1;">
+                <button class="btn-accent" style="width: 120px; margin: 0;" onclick="activateNoAds()">تفعيل</button>
+            </div>
+            <p id="noAdsStatusMsg" style="font-size: 12px; color: #f59e0b; margin-top: 8px; text-align: center; font-weight: bold;"></p>
+        </div>
         
-        <div class="ad-container" style="margin-top: 20px;">
+        <!-- قسم الإعلان الثاني -->
+        <div class="ad-container ad-element-box" style="margin-top: 20px;">
             <script src="https://pl30898643.effectivecpmnetwork.com/67/41/55/67415544e30d0d931e9bdce53f5b077d.js"></script>
         </div>
     </div>
@@ -436,12 +448,53 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // دالة لجلب وتحليل ملف الـ M3U الخاص بالرياضة وعرضه تلقائياً
+    // دالة تفعيل وإدارة إزالة الإعلانات كلياً
+    function applyAdFreeStatus(noAdsUntil) {
+        const now = Date.now();
+        const adElements = document.querySelectorAll('.ad-element-box');
+        const smartLink = document.getElementById('smartLinkIframe');
+        const socialBar = document.getElementById('socialBarScript');
+        const statusMsg = document.getElementById('noAdsStatusMsg');
+
+        if (noAdsUntil && now < noAdsUntil) {
+            adElements.forEach(el => el.style.display = 'none');
+            if (smartLink) smartLink.remove();
+            if (socialBar) socialBar.remove();
+
+            const remainingHours = Math.ceil((noAdsUntil - now) / (1000 * 60 * 60));
+            if (statusMsg) {
+                statusMsg.innerText = `✨ ميزة إزالة الإعلانات مفعلة! متبقي: ${remainingHours} ساعة.`;
+            }
+            return true;
+        } else {
+            if (statusMsg) {
+                statusMsg.innerText = "";
+            }
+            return false;
+        }
+    }
+
+    // دالة زر تفعيل إزالة الإعلانات عبر كلمة السر
+    window.activateNoAds = function() {
+        const codeInput = document.getElementById('noAdsCodeInput').value.trim();
+        if (codeInput === "حسين خالد عمي") {
+            const sixteenHoursLater = Date.now() + (16 * 60 * 60 * 1000);
+            update(userRef, { noAdsUntil: sixteenHoursLater }).then(() => {
+                alert("تم تفعيل اشتراك إزالة الإعلانات كلياً لمدة 16 ساعة بنجاح! 🎉");
+                document.getElementById('noAdsCodeInput').value = '';
+                applyAdFreeStatus(sixteenHoursLater);
+            });
+        } else {
+            alert("كلمة السر غير صحيحة!");
+        }
+    };
+
+    // جلب ملف الـ M3U
     async function loadM3UChannels() {
         const matchesListEl = document.getElementById('matchesList');
         try {
-            // استخدام وكيل لفتح الرابط وتجاوز قيود الـ CORS إن وجدت
-            const response = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://iptv-org.github.io/iptv/categories/sports.m3u'));
+            const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://iptv-org.github.io/iptv/categories/sports.m3u');
+            const response = await fetch(proxyUrl);
             const data = await response.text();
             
             const lines = data.split('\n');
@@ -463,19 +516,18 @@
                 }
             }
 
-            // عرض أول 30 قناة كمثال لكي لا يثقل الصفحة
-            window.m3uChannelsData = channels.slice(0, 30);
+            window.m3uChannelsData = channels.slice(0, 20);
             renderCombinedContent();
 
         } catch (error) {
             console.error("خطأ في جلب قائمة الـ M3U:", error);
-            renderCombinedContent([]);
+            window.m3uChannelsData = [];
+            renderCombinedContent();
         }
     }
 
     let firebaseMatches = {};
 
-    // نظام الهوية الثابتة
     let persistentId = localStorage.getItem("saf_persistent_id");
     if (!persistentId) {
         persistentId = "user_" + Math.random().toString(36).substring(2, 10) + "_" + Date.now();
@@ -489,6 +541,7 @@
         document.getElementById('myLinksQuota').innerText = data.currentLinks || 0;
         document.getElementById('myAllowedLinks').innerText = data.allowedLinks || 1;
         checkAdLimitStatus(data.lastAdTimes || []);
+        applyAdFreeStatus(data.noAdsUntil || 0);
     });
 
     function checkAdLimitStatus(adTimes) {
@@ -617,10 +670,6 @@
 
         if (url.match(/\.(jpeg|jpg|gif|png|webp|svg)$/i)) {
             return { type: 'image', url: url };
-        }
-
-        if (url.endsWith('.m3u8') || url.includes('.ts')) {
-            return { type: 'stream', url: url };
         }
 
         return { type: 'iframe', url: url };
@@ -774,22 +823,22 @@
 
         let hasContent = false;
 
-        // 1. عرض قنوات الـ M3U القادمة من الرابط الخارجي أولاً
+        // 1. عرض قنوات الـ M3U المتاحة
         if (window.m3uChannelsData && window.m3uChannelsData.length > 0) {
             hasContent = true;
             window.m3uChannelsData.forEach((channel, index) => {
                 let div = document.createElement('div');
                 div.className = 'match-card';
                 div.innerHTML = `
-                    <h3>📡 قناة رياضية: ${channel.title}</h3>
+                    <h3>📡 ${channel.title}</h3>
                     <div class="media-container">
                         <video id="m3u-video-${index}" class="video-js vjs-default-skin" controls preload="auto" width="100%" height="280" data-setup='{}'>
                             <source src="${channel.url}" type="application/x-mpegURL">
                         </video>
                     </div>
                     <div class="stream-footer-info">
-                        <span>قناة رياضية مجانية عبر IPTV</span>
-                        <a href="${channel.url}" target="_blank" style="color: var(--primary); text-decoration: none;">رابط البث 🔗</a>
+                        <span>قناة رياضية عبر IPTV</span>
+                        <a href="${channel.url}" target="_blank" style="color: var(--primary); text-decoration: none;">رابط البث المباشر 🔗</a>
                     </div>
                 `;
                 list.appendChild(div);
@@ -806,10 +855,6 @@
                 let mediaHtml = '';
                 if (match.contentType === 'image') {
                     mediaHtml = `<img src="${match.url}" alt="${match.title}">`;
-                } else if (match.contentType === 'stream') {
-                    mediaHtml = `<video class="video-js vjs-default-skin" controls preload="auto" width="100%" height="280" data-setup='{}'>
-                                    <source src="${match.url}" type="application/x-mpegURL">
-                                 </video>`;
                 } else {
                     mediaHtml = `<iframe src="${match.url}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>`;
                 }
@@ -825,7 +870,7 @@
                         <a href="https://khaldalsalhy346-oss.github.io/live/" target="_blank" style="color: var(--primary); text-decoration: none;">زيارة الموقع 🔗</a>
                     </div>
                     <div class="legal-notice">
-                        الموقع وسيط لنقل المحتوى لا أكثر وغير مسؤول عن أي محتوى غير قانوني ينشره صاحب البث.
+                        الموقع وسيط لن نقل المحتوى لا أكثر وغير مسؤول عن أي محتوى غير قانوني ينشره صاحب البث.
                     </div>
                     ${(isDeveloperActive || match.publisher === persistentId || match.publisher === 'system') ? `<button class="btn-danger" style="margin-top: 12px;" onclick="deleteMatch('${key}')">حذف هذا المحتوى 🗑️</button>` : ''}
                 `;
@@ -834,7 +879,7 @@
         }
 
         if (!hasContent) {
-            list.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">لا توجد بثوث أو قنوات متاحة حالياً.</p>';
+            list.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">جاري تحميل أو تحديث القنوات الرياضية...</p>';
         }
     }
 
@@ -844,12 +889,11 @@
         renderCombinedContent();
     });
 
-    // بدء تحميل القنوات عند فتح الصفحة
     loadM3UChannels();
 </script>
 
 <!-- الرابط الذكي (Smart Link) في نهاية الصفحة -->
-<iframe src="https://www.effectivecpmnetwork.com/cxzhvip81z?key=af18d81d78cafde89a3a6da18c9e3480" style="display:none;" width="0" height="0"></iframe>
+<iframe id="smartLinkIframe" src="https://www.effectivecpmnetwork.com/cxzhvip81z?key=af18d81d78cafde89a3a6da18c9e3480" style="display:none;" width="0" height="0"></iframe>
 
 </body>
 </html>
