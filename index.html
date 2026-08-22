@@ -9,7 +9,9 @@
     <meta name="description" content="موقع سفوان سبورت الرسمي - البث المباشر للمباريات، مشاهدة القنوات الرياضية، جدول مباريات اليوم، وأحدث الأخبار الرياضية بجودة عالية وبدون تقطيع.">
     <meta name="keywords" content="سفوان سبورت, safwan sport, بث مباشر للمباريات, مباريات اليوم بث مباشر, مشاهدة المباريات اونلاين, قنوات رياضية بث حي, الدوري الإنجليزي, كورة لايف, yalla shoot">
 
-    <!-- استدعاء مكتبة Video.js لتشغيل البثوث وملفات الـ HLS/TS -->
+    <!-- HLS.js من CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <!-- استدعاء مكتبة Video.js للبثوث الأخرى -->
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
 
     <!-- كود البار الاجتماعي -->
@@ -27,6 +29,7 @@
             --text-muted: #94a3b8;
             --border: #1e293b;
             --danger: #ef4444;
+            --cyan-accent: #00d4ff;
         }
 
         * {
@@ -68,11 +71,12 @@
         }
 
         .logo-area h1 {
-            font-size: 20px;
+            font-size: 18px;
             color: var(--text-main);
             display: flex;
             align-items: center;
             gap: 8px;
+            font-weight: 600;
         }
 
         .logo-area span {
@@ -117,6 +121,99 @@
             border-bottom: 2px solid var(--border);
             padding-bottom: 8px;
         }
+
+        /* --- تنسيقات مشغل الـ IPTV الاحترافي المدمج --- */
+        .player-wrapper {
+            position: relative;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.7);
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+        }
+        #videoPlayer {
+            width: 100%;
+            display: block;
+            aspect-ratio: 16 / 9;
+            background: #0a0a0a;
+        }
+        .controls-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: space-between;
+            align-items: stretch;
+            background: #0b111e;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        .channel-list {
+            flex: 1;
+            min-width: 250px;
+            max-height: 240px;
+            overflow-y: auto;
+            background: #090d16;
+            border-radius: 10px;
+            padding: 8px;
+            border: 1px solid var(--border);
+        }
+        .channel-list::-webkit-scrollbar { width: 5px; }
+        .channel-list::-webkit-scrollbar-track { background: #090d16; }
+        .channel-list::-webkit-scrollbar-thumb { background: var(--cyan-accent); border-radius: 10px; }
+        .channel-item {
+            padding: 10px 14px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.15s ease;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .channel-item:hover { background: #131d31; color: #fff; }
+        .channel-item.active {
+            background: rgba(0, 212, 255, 0.15);
+            color: var(--cyan-accent);
+            border-right: 3px solid var(--cyan-accent);
+            font-weight: 600;
+        }
+        .channel-item .num {
+            color: #556;
+            font-size: 0.75rem;
+            min-width: 25px;
+        }
+        .status {
+            font-size: 0.85rem;
+            color: var(--cyan-accent);
+            padding: 8px 14px;
+            background: #131d31;
+            border-radius: 20px;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--border);
+        }
+        .loading {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            background: rgba(0,0,0,0.8);
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: 0.3s;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            z-index: 5;
+        }
+        .loading.show { opacity: 1; }
 
         .form-group {
             margin-bottom: 12px;
@@ -325,20 +422,41 @@
         </div>
     </header>
 
-    <!-- 1. قسم عرض المحتوى وقنوات الـ M3U المتاحة -->
+    <!-- 1. مشغل قنوات الـ M3U المدمج مع تصميم سفوان سبورت -->
     <div class="card full-width">
-        <h2>قائمة البثوث والقنوات الرياضية المباشرة (M3U)</h2>
+        <h2>مشغل قنوات الـ IPTV الرياضية المباشرة (M3U)</h2>
         
+        <!-- المشغل الاحترافي -->
+        <div class="player-wrapper">
+            <video id="videoPlayer" controls autoplay playsinline></video>
+            <div class="loading" id="loadingIndicator">⏳ جارٍ التحميل...</div>
+        </div>
+
+        <!-- أزرار التحكم وقائمة القنوات المنسقة -->
+        <div class="controls-bar">
+            <div style="display: flex; flex-direction: column; gap: 10px; justify-content: center; min-width: 180px;">
+                <button class="btn btn-primary" id="loadPlaylistBtn" style="background: var(--primary);">🔗 تحديث القائمة</button>
+                <div class="status" id="statusText">⏸ غير مشغل</div>
+            </div>
+            <div class="channel-list" id="channelList">
+                <div style="color: var(--text-muted); padding: 15px; text-align: center;">📡 انتظر تحميل القنوات...</div>
+            </div>
+        </div>
+
         <!-- قسم الإعلان البنري الأول -->
-        <div class="ad-container ad-element-box" style="margin-top: 15px;">
+        <div class="ad-container ad-element-box" style="margin-top: 20px;">
             <script async="async" data-cfasync="false" src="https://pl30954172.effectivecpmnetwork.com/4ab53087caf8ea17c6e79b6da74713d9/invoke.js"></script>
             <div id="container-4ab53087caf8ea17c6e79b6da74713d9"></div>
         </div>
-
-        <div id="matchesList" style="color: var(--text-muted); text-align: center; padding: 20px;">جاري تحميل القنوات الرياضية من القائمة...</div>
     </div>
 
-    <!-- 2. قسم الإعلانات وإدارة النقاط وإزالة الإعلانات -->
+    <!-- 2. قسم العروض والمنشورات المضافة من المستخدمين (Firebase) -->
+    <div class="card full-width">
+        <h2>البثوث والمحتويات الإضافية المشتركة</h2>
+        <div id="matchesList" style="color: var(--text-muted); text-align: center; padding: 20px;">جاري تحميل المحتويات...</div>
+    </div>
+
+    <!-- 3. قسم إدارة النقاط وإزالة الإعلانات -->
     <div class="card full-width">
         <h2>إدارة النقاط وحصة الروابط وإزالة الإعلانات</h2>
         <div style="display: flex; flex-direction: column; gap: 10px; max-width: 400px; margin: 0 auto;">
@@ -349,7 +467,7 @@
             <button class="btn-primary" onclick="buyMoreLinks()" style="background: #0284c7;">شراء حصة رابط إضافي (التكلفة: 20 نقطة)</button>
         </div>
 
-        <!-- خانة مستقلة لإزالة الإعلانات بكلمة السر -->
+        <!-- خانة إزالة الإعلانات بكلمة السر -->
         <div style="margin-top: 25px; border-top: 1px solid var(--border); padding-top: 15px; max-width: 400px; margin-left: auto; margin-right: auto;">
             <label style="color: var(--accent); font-weight: bold; margin-bottom: 5px;">🌟 تفعيل اشتراك إزالة الإعلانات (16 ساعة)</label>
             <div style="display: flex; gap: 8px;">
@@ -365,7 +483,7 @@
         </div>
     </div>
 
-    <!-- 3. قسم نشر المحتوى أو الرابط الشامل -->
+    <!-- 4. قسم نشر المحتوى أو الرابط الشامل -->
     <div class="card full-width">
         <h2>نشر محتوى أو رابط جديد (بث، يوتيوب، موقع، صورة، فيلم)</h2>
         
@@ -426,13 +544,10 @@
     </div>
 </div>
 
-<!-- مكتبة Video.js JavaScript -->
-<script src="https://vjs.zencdn.net/8.10.0/video.js"></script>
-
-<!-- Firebase SDK والمنطق البرمجي -->
+<!-- Firebase SDK والمنطق البرمجي ومشغل M3U المدمج -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, update, push, remove, increment, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue, update, push, remove, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBLzmAcwFMcP7m6yjd_25MTKX1DPZJz958",
@@ -448,7 +563,181 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // دالة تفعيل وإدارة إزالة الإعلانات كلياً
+    // -------------------- منطق مشغل M3U المدمج --------------------
+    const PLAYLIST_URL = 'https://iptv-org.github.io/iptv/categories/sports.m3u';
+    const video = document.getElementById('videoPlayer');
+    const channelListEl = document.getElementById('channelList');
+    const statusText = document.getElementById('statusText');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const loadBtn = document.getElementById('loadPlaylistBtn');
+
+    let hls = null;
+    let channels = [];
+    let currentChannelIndex = -1;
+
+    async function fetchPlaylist(url) {
+        try {
+            const response = await fetch(url, {
+                mode: 'cors',
+                headers: { 'Accept': 'application/vnd.apple.m3u8, audio/mpegurl, */*' }
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return await response.text();
+        } catch (err) {
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+            const proxyRes = await fetch(proxyUrl);
+            if (!proxyRes.ok) throw new Error(`Proxy HTTP ${proxyRes.status}`);
+            return await proxyRes.text();
+        }
+    }
+
+    function parseM3U(content) {
+        const lines = content.split(/\r?\n/);
+        const result = [];
+        let currentName = '';
+        let isExtended = false;
+
+        for (let line of lines) {
+            line = line.trim();
+            if (!line) continue;
+
+            if (line.startsWith('#EXTINF:')) {
+                isExtended = true;
+                const parts = line.split(',');
+                currentName = parts.length > 1 ? parts.slice(1).join(',').trim() : 'قناة بدون اسم';
+                currentName = currentName.replace(/<[^>]*>/g, '').trim();
+                continue;
+            }
+
+            if (line.startsWith('#')) continue;
+
+            if (isExtended && line.startsWith('http')) {
+                result.push({ name: currentName || 'قناة', url: line });
+                currentName = '';
+                isExtended = false;
+            } else if (!isExtended && line.startsWith('http')) {
+                result.push({ name: `قناة ${result.length + 1}`, url: line });
+            }
+        }
+        return result;
+    }
+
+    function renderChannels() {
+        channelListEl.innerHTML = '';
+        if (!channels.length) {
+            channelListEl.innerHTML = '<div style="color: var(--text-muted); padding: 12px; text-align: center;">🚫 لا توجد قنوات</div>';
+            return;
+        }
+        channels.forEach((ch, idx) => {
+            const div = document.createElement('div');
+            div.className = `channel-item${idx === currentChannelIndex ? ' active' : ''}`;
+            div.innerHTML = `<span class="num">${idx + 1}</span> ${ch.name}`;
+            div.addEventListener('click', () => playChannel(idx));
+            channelListEl.appendChild(div);
+        });
+        if (currentChannelIndex >= 0) {
+            const items = channelListEl.querySelectorAll('.channel-item');
+            if (items[currentChannelIndex]) {
+                items[currentChannelIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            }
+        }
+    }
+
+    function playChannel(index) {
+        if (index < 0 || index >= channels.length) return;
+        const channel = channels[index];
+        if (!channel || !channel.url) return;
+
+        currentChannelIndex = index;
+        statusText.textContent = `🔄 جارٍ التحميل...`;
+        loadingIndicator.classList.add('show');
+
+        renderChannels();
+
+        if (hls) {
+            hls.destroy();
+            hls = null;
+        }
+
+        if (Hls.isSupported()) {
+            hls = new Hls({
+                enableWorker: true,
+                lowLatencyMode: true,
+                backbufferLength: 30,
+                maxBufferLength: 60,
+            });
+
+            hls.loadSource(channel.url);
+            hls.attachMedia(video);
+
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                loadingIndicator.classList.remove('show');
+                statusText.textContent = `▶️ ${channel.name}`;
+                video.play().catch(e => console.warn('تشغيل تلقائي غير مسموح:', e));
+            });
+
+            hls.on(Hls.Events.ERROR, (event, data) => {
+                console.error('خطأ HLS:', data);
+                loadingIndicator.classList.remove('show');
+                if (data.fatal) {
+                    statusText.textContent = `❌ خطأ في البث`;
+                    hls.recoverMediaError();
+                } else {
+                    statusText.textContent = `⚠️ تنبيه في البث`;
+                }
+            });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = channel.url;
+            video.addEventListener('loadedmetadata', () => {
+                loadingIndicator.classList.remove('show');
+                statusText.textContent = `▶️ ${channel.name}`;
+                video.play().catch(e => console.warn(e));
+            });
+        } else {
+            loadingIndicator.classList.remove('show');
+            statusText.textContent = '❌ المتصفح لا يدعم HLS';
+        }
+    }
+
+    async function loadPlaylist() {
+        statusText.textContent = '⏳ جاري تحميل القائمة...';
+        loadingIndicator.classList.add('show');
+
+        try {
+            const content = await fetchPlaylist(PLAYLIST_URL);
+            const parsed = parseM3U(content);
+            if (!parsed.length) {
+                statusText.textContent = '⚠️ لم يتم العثور على قنوات';
+                loadingIndicator.classList.remove('show');
+                return;
+            }
+            channels = parsed;
+            currentChannelIndex = -1;
+            renderChannels();
+            statusText.textContent = `✅ تم تحميل ${channels.length} قناة`;
+            loadingIndicator.classList.remove('show');
+
+            if (channels.length > 0) {
+                playChannel(0);
+            }
+        } catch (error) {
+            console.error('فشل تحميل القائمة:', error);
+            statusText.textContent = '❌ فشل تحميل القائمة';
+            loadingIndicator.classList.remove('show');
+        }
+    }
+
+    loadBtn.addEventListener('click', loadPlaylist);
+    loadPlaylist();
+
+    window.addEventListener('beforeunload', () => {
+        if (hls) {
+            hls.destroy();
+            hls = null;
+        }
+    });
+
+    // -------------------- إدارة إزالة الإعلانات و Firebase --------------------
     function applyAdFreeStatus(noAdsUntil) {
         const now = Date.now();
         const adElements = document.querySelectorAll('.ad-element-box');
@@ -467,14 +756,11 @@
             }
             return true;
         } else {
-            if (statusMsg) {
-                statusMsg.innerText = "";
-            }
+            if (statusMsg) statusMsg.innerText = "";
             return false;
         }
     }
 
-    // دالة زر تفعيل إزالة الإعلانات عبر كلمة السر
     window.activateNoAds = function() {
         const codeInput = document.getElementById('noAdsCodeInput').value.trim();
         if (codeInput === "حسين خالد عمي") {
@@ -489,45 +775,7 @@
         }
     };
 
-    // جلب ملف الـ M3U
-    async function loadM3UChannels() {
-        const matchesListEl = document.getElementById('matchesList');
-        try {
-            const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://iptv-org.github.io/iptv/categories/sports.m3u');
-            const response = await fetch(proxyUrl);
-            const data = await response.text();
-            
-            const lines = data.split('\n');
-            let channels = [];
-            let currentTitle = '';
-
-            for (let i = 0; i < lines.length; i++) {
-                let line = lines[i].trim();
-                if (line.startsWith('#EXTINF:')) {
-                    let parts = line.split(',');
-                    if (parts.length > 1) {
-                        currentTitle = parts[parts.length - 1];
-                    }
-                } else if (line && !line.startsWith('#')) {
-                    if (currentTitle) {
-                        channels.push({ title: currentTitle, url: line });
-                        currentTitle = '';
-                    }
-                }
-            }
-
-            window.m3uChannelsData = channels.slice(0, 20);
-            renderCombinedContent();
-
-        } catch (error) {
-            console.error("خطأ في جلب قائمة الـ M3U:", error);
-            window.m3uChannelsData = [];
-            renderCombinedContent();
-        }
-    }
-
     let firebaseMatches = {};
-
     let persistentId = localStorage.getItem("saf_persistent_id");
     if (!persistentId) {
         persistentId = "user_" + Math.random().toString(36).substring(2, 10) + "_" + Date.now();
@@ -652,7 +900,6 @@
 
     function processUniversalUrl(url) {
         if (!url) return { type: 'iframe', url: '' };
-        
         let videoId = "";
         if (url.includes("youtu.be/")) {
             videoId = url.split("youtu.be/")[1]?.split("?")[0];
@@ -663,15 +910,12 @@
         } else if (url.includes("live/")) {
             videoId = url.split("live/")[1]?.split("?")[0];
         }
-        
         if (videoId) {
             return { type: 'iframe', url: `https://www.youtube.com/embed/${videoId}?autoplay=0&enablejsapi=1` };
         }
-
         if (url.match(/\.(jpeg|jpg|gif|png|webp|svg)$/i)) {
             return { type: 'image', url: url };
         }
-
         return { type: 'iframe', url: url };
     }
 
@@ -689,10 +933,8 @@
         if (!isDragging) return;
         let x = e.clientX - startX;
         let y = e.clientY - startY;
-        
         x = Math.max(0, Math.min(x, previewBox.clientWidth - dragBox.clientWidth));
         y = Math.max(0, Math.min(y, previewBox.clientHeight - dragBox.clientHeight));
-
         dragBox.style.left = x + 'px';
         dragBox.style.top = y + 'px';
     });
@@ -717,12 +959,10 @@
     window.publishFreeMatch = function() {
         const realTitle = document.getElementById('devRealTitle').value.trim();
         const realUrl = document.getElementById('devRealUrl').value.trim();
-
         if (!realTitle || !realUrl) {
             alert("يرجى إدخال اسم الحدث والرابط الفعلي في لوحة المطور!");
             return;
         }
-
         const blurX = (dragBox.offsetLeft / previewBox.clientWidth) * 100;
         const blurY = (dragBox.offsetTop / previewBox.clientHeight) * 100;
         const processed = processUniversalUrl(realUrl);
@@ -815,43 +1055,17 @@
         setTimeout(() => msgEl.innerText = '', 4000);
     }
 
-    function renderCombinedContent() {
+    function renderMatches() {
         const list = document.getElementById('matchesList');
         list.innerHTML = '';
-        
         const isDeveloperActive = (document.getElementById('matchTitle').value.trim() === "حسين خالد" && document.getElementById('streamUrl').value.trim() === "000123");
 
         let hasContent = false;
-
-        // 1. عرض قنوات الـ M3U المتاحة
-        if (window.m3uChannelsData && window.m3uChannelsData.length > 0) {
+        if (firebaseMatches && Object.keys(firebaseMatches).length > 0) {
             hasContent = true;
-            window.m3uChannelsData.forEach((channel, index) => {
-                let div = document.createElement('div');
-                div.className = 'match-card';
-                div.innerHTML = `
-                    <h3>📡 ${channel.title}</h3>
-                    <div class="media-container">
-                        <video id="m3u-video-${index}" class="video-js vjs-default-skin" controls preload="auto" width="100%" height="280" data-setup='{}'>
-                            <source src="${channel.url}" type="application/x-mpegURL">
-                        </video>
-                    </div>
-                    <div class="stream-footer-info">
-                        <span>قناة رياضية عبر IPTV</span>
-                        <a href="${channel.url}" target="_blank" style="color: var(--primary); text-decoration: none;">رابط البث المباشر 🔗</a>
-                    </div>
-                `;
-                list.appendChild(div);
-            });
-        }
-
-        // 2. عرض المنشورات المحفوظة في قاعدة بيانات Firebase
-        if (firebaseMatches) {
             Object.entries(firebaseMatches).reverse().forEach(([key, match]) => {
-                hasContent = true;
                 let div = document.createElement('div');
                 div.className = 'match-card';
-                
                 let mediaHtml = '';
                 if (match.contentType === 'image') {
                     mediaHtml = `<img src="${match.url}" alt="${match.title}">`;
@@ -870,7 +1084,7 @@
                         <a href="https://khaldalsalhy346-oss.github.io/live/" target="_blank" style="color: var(--primary); text-decoration: none;">زيارة الموقع 🔗</a>
                     </div>
                     <div class="legal-notice">
-                        الموقع وسيط لن نقل المحتوى لا أكثر وغير مسؤول عن أي محتوى غير قانوني ينشره صاحب البث.
+                        الموقع وسيط لنقل المحتوى لا أكثر وغير مسؤول عن أي محتوى غير قانوني ينشره صاحب البث.
                     </div>
                     ${(isDeveloperActive || match.publisher === persistentId || match.publisher === 'system') ? `<button class="btn-danger" style="margin-top: 12px;" onclick="deleteMatch('${key}')">حذف هذا المحتوى 🗑️</button>` : ''}
                 `;
@@ -879,17 +1093,15 @@
         }
 
         if (!hasContent) {
-            list.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">جاري تحميل أو تحديث القنوات الرياضية...</p>';
+            list.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">لا توجد محتويات إضافية منشورة حالياً.</p>';
         }
     }
 
     const matchesRef = ref(db, 'matches');
     onValue(matchesRef, (snapshot) => {
         firebaseMatches = snapshot.val() || {};
-        renderCombinedContent();
+        renderMatches();
     });
-
-    loadM3UChannels();
 </script>
 
 <!-- الرابط الذكي (Smart Link) في نهاية الصفحة -->
