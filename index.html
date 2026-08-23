@@ -285,22 +285,28 @@
         .preview-box {
             position: relative;
             width: 100%;
-            height: 180px;
+            height: 220px;
             background: #000;
             border-radius: 8px;
             overflow: hidden;
             margin-bottom: 12px;
             border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        }
+
+        .preview-box iframe, .preview-box img {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+            object-fit: cover;
+            pointer-events: none; /* لتسهيل سحب المربع فوقه دون تفاعل مع الـ iframe */
         }
 
         .draggable-blur {
             position: absolute;
             width: 120px;
             height: 45px;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border: 2px dashed var(--accent);
@@ -406,7 +412,7 @@
             padding: 25px;
             border-radius: 14px;
             text-align: center;
-            max-width: 480px;
+            max-width: 520px;
             width: 90%;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             max-height: 90vh;
@@ -500,10 +506,10 @@
 
         <div id="devPanel" class="dev-box">
             <p style="color: var(--accent); font-weight: bold; margin-bottom: 10px; font-size: 13px;">🔓 تم تفعيل لوحة المطور بنجاح!</p>
-            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">اسحب صندوق الغباش أدناه إلى المكان الذي ترغب بحجبه:</p>
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">اسحب صندوق الغباش أدناه فوق المكان المراد إخفاؤه في الشاشة:</p>
             
             <div class="preview-box" id="previewBox">
-                <div id="dragBlur" class="draggable-blur" draggable="true">اسحبني للغباش</div>
+                <div id="dragBlur" class="draggable-blur" draggable="true">اسحبني للأفيكس</div>
             </div>
 
             <div class="form-group">
@@ -517,7 +523,7 @@
             </div>
             <div class="form-group">
                 <label>الرابط الشامل أو رابط الـ Iframe للبث</label>
-                <input type="text" id="devRealUrl" placeholder="الصق رابط السيرفر هنا">
+                <input type="text" id="devRealUrl" placeholder="الصق رابط السيرفر هنا" oninput="updatePreviewStream(this.value, 'previewBox', 'dragBlur')">
             </div>
             
             <button class="btn-accent" onclick="publishFreeMatch()">نشر الرابط مجاناً عبر المطور ⚡</button>
@@ -552,7 +558,7 @@
         
         <div class="form-group" style="text-align: right;">
             <label>رابط البث أو الـ Iframe الجديد</label>
-            <input type="text" id="editUrlInput" placeholder="رابط البث">
+            <input type="text" id="editUrlInput" placeholder="رابط البث" oninput="updatePreviewStream(this.value, 'editPreviewBox', 'editDragBlur')">
         </div>
 
         <div class="form-group" style="text-align: right;">
@@ -561,7 +567,8 @@
         </div>
 
         <div style="text-align: right; margin-bottom: 8px;">
-            <label style="color: var(--accent);">تعديل موقع صندوق الغباش (الأفيكس):</label>
+            <label style="color: var(--accent);">معاينة البث وتعديل موقع صندوق الغباش (الأفيكس):</label>
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">ستظهر معاينة البث أدناه لتتمكن من سحب الأفيكس بدقة فوق الشعار أو الإعلان:</p>
         </div>
         <div class="preview-box" id="editPreviewBox">
             <div id="editDragBlur" class="draggable-blur" draggable="true">اسحب لتغيير مكان الأفيكس</div>
@@ -832,6 +839,32 @@
         return { type: 'iframe', url: url };
     }
 
+    // دالة تحديث معاينة البث داخل صناديق السحب
+    window.updatePreviewStream = function(url, boxId, dragId) {
+        const box = document.getElementById(boxId);
+        const dragElem = document.getElementById(dragId);
+        if (!box || !dragElem) return;
+
+        // إزالة أي عناصر معاينة قديمة مع الاحتفاظ بعنصر السحب
+        const oldContent = box.querySelectorAll('iframe, img');
+        oldContent.forEach(el => el.remove());
+
+        if (!url) return;
+        const processed = processUniversalUrl(url);
+
+        let previewElem;
+        if (processed.type === 'image') {
+            previewElem = document.createElement('img');
+            previewElem.src = processed.url;
+        } else {
+            previewElem = document.createElement('iframe');
+            previewElem.src = processed.url;
+        }
+        
+        // إدراج العنصر كخلفية للمعاينة تحت عنصر السحب
+        box.insertBefore(previewElem, dragElem);
+    };
+
     // سحب الأفيكس في النشر الرئيسي
     const dragBox = document.getElementById('dragBlur');
     const previewBox = document.getElementById('previewBox');
@@ -898,6 +931,8 @@
             document.getElementById('devRealTitle').value = '';
             document.getElementById('devRealUrl').value = '';
             document.getElementById('devOverlayText').value = '';
+            // تنظيف معاينة النشر
+            updatePreviewStream('', 'previewBox', 'dragBlur');
         });
     };
 
@@ -933,6 +968,9 @@
         document.getElementById('editUrlInput').value = currentUrl;
         document.getElementById('editOverlayText').value = currentOverlayText || '';
 
+        // تفعيل معاينة البث الحالي في نافذة التعديل تلقائياً
+        updatePreviewStream(currentUrl, 'editPreviewBox', 'editDragBlur');
+
         // ضبط مكان الأفيكس الحالي في نافذة التعديل
         if (hasBlur) {
             editDragBox.style.left = (blurX * editPreviewBox.clientWidth / 100) + 'px';
@@ -948,6 +986,7 @@
 
     window.closeEditModal = function() {
         document.getElementById('editModal').style.display = 'none';
+        updatePreviewStream('', 'editPreviewBox', 'editDragBlur');
     };
 
     window.saveEditedMatch = function() {
@@ -967,7 +1006,6 @@
             overlayText: newOverlayText
         };
 
-        // إذا كان هناك أفيكس مسبقاً، قم بتحديث إحداثياته الجديدة بناءً على مكان السحب
         if (editDragBox.style.display !== 'none') {
             updateData.blurX = (editDragBox.offsetLeft / editPreviewBox.clientWidth) * 100;
             updateData.blurY = (editDragBox.offsetTop / editPreviewBox.clientHeight) * 100;
@@ -1005,7 +1043,7 @@
                     <h3>📺 ${match.title}</h3>
                     <div class="media-container">
                         ${mediaHtml}
-                        ${match.hasBlur ? `<div style="position: absolute; top: ${match.blurY}%; left: ${match.blurX}%; width: 120px; height: 45px; background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; pointer-events: none;"></div>` : ''}
+                        ${match.hasBlur ? `<div style="position: absolute; top: ${match.blurY}%; left: ${match.blurX}%; width: 120px; height: 45px; background: rgba(255,255,255,0.25); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; pointer-events: none;"></div>` : ''}
                         ${match.overlayText ? `<div style="position: absolute; bottom: 15px; right: 15px; background: rgba(0,0,0,0.7); color: #fff; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px); pointer-events: none; z-index: 5;">📌 ${match.overlayText}</div>` : ''}
                     </div>
                     <div class="stream-footer-info">
