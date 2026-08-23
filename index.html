@@ -406,9 +406,11 @@
             padding: 25px;
             border-radius: 14px;
             text-align: center;
-            max-width: 450px;
+            max-width: 480px;
             width: 90%;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            max-height: 90vh;
+            overflow-y: auto;
         }
     </style>
 </head>
@@ -505,6 +507,11 @@
             </div>
 
             <div class="form-group">
+                <label>النص المضاف على شاشة البث (اختياري)</label>
+                <input type="text" id="devOverlayText" placeholder="مثال: قناة سفوان سبورت الرياضية">
+            </div>
+
+            <div class="form-group">
                 <label>اسم الحدث الفعلي الجديد</label>
                 <input type="text" id="devRealTitle" placeholder="اسم الحدث الجديد">
             </div>
@@ -535,17 +542,32 @@
 <!-- نافذة تعديل البث المنبثقة (Modal) -->
 <div id="editModal">
     <div class="ad-modal-box">
-        <h3 style="color: var(--text-main); margin-bottom: 15px;">✏️ تعديل محتوى البث</h3>
+        <h3 style="color: var(--text-main); margin-bottom: 15px;">✏️ تعديل محتوى البث والأفيكس والنص</h3>
         <input type="hidden" id="editMatchKey">
+        
         <div class="form-group" style="text-align: right;">
             <label>عنوان البث الجديد</label>
             <input type="text" id="editTitleInput" placeholder="عنوان البث">
         </div>
-        <div class="form-group" style="text-align: right; margin-bottom: 20px;">
+        
+        <div class="form-group" style="text-align: right;">
             <label>رابط البث أو الـ Iframe الجديد</label>
             <input type="text" id="editUrlInput" placeholder="رابط البث">
         </div>
-        <div style="display: flex; gap: 10px;">
+
+        <div class="form-group" style="text-align: right;">
+            <label>النص المضاف على شاشة البث</label>
+            <input type="text" id="editOverlayText" placeholder="النص الظاهر على الشاشة">
+        </div>
+
+        <div style="text-align: right; margin-bottom: 8px;">
+            <label style="color: var(--accent);">تعديل موقع صندوق الغباش (الأفيكس):</label>
+        </div>
+        <div class="preview-box" id="editPreviewBox">
+            <div id="editDragBlur" class="draggable-blur" draggable="true">اسحب لتغيير مكان الأفيكس</div>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
             <button class="btn-primary" onclick="saveEditedMatch()">حفظ التعديلات</button>
             <button class="btn-danger" onclick="closeEditModal()">إلغاء</button>
         </div>
@@ -810,6 +832,7 @@
         return { type: 'iframe', url: url };
     }
 
+    // سحب الأفيكس في النشر الرئيسي
     const dragBox = document.getElementById('dragBlur');
     const previewBox = document.getElementById('previewBox');
     let isDragging = false, startX, startY;
@@ -828,6 +851,25 @@
     });
     document.addEventListener('mouseup', () => { isDragging = false; });
 
+    // سحب الأفيكس في نافذة التعديل
+    const editDragBox = document.getElementById('editDragBlur');
+    const editPreviewBox = document.getElementById('editPreviewBox');
+    let isEditDragging = false, editStartX, editStartY;
+
+    editDragBox.addEventListener('mousedown', (e) => {
+        isEditDragging = true;
+        editStartX = e.clientX - editDragBox.offsetLeft;
+        editStartY = e.clientY - editDragBox.offsetTop;
+    });
+    document.addEventListener('mousemove', (e) => {
+        if (!isEditDragging) return;
+        let x = Math.max(0, Math.min(e.clientX - editStartX, editPreviewBox.clientWidth - editDragBox.clientWidth));
+        let y = Math.max(0, Math.min(e.clientY - editStartY, editPreviewBox.clientHeight - editDragBox.clientHeight));
+        editDragBox.style.left = x + 'px';
+        editDragBox.style.top = y + 'px';
+    });
+    document.addEventListener('mouseup', () => { isEditDragging = false; });
+
     window.checkDevMode = function() {
         const title = document.getElementById('matchTitle').value.trim();
         const url = document.getElementById('streamUrl').value.trim();
@@ -838,6 +880,7 @@
     window.publishFreeMatch = function() {
         const realTitle = document.getElementById('devRealTitle').value.trim();
         const realUrl = document.getElementById('devRealUrl').value.trim();
+        const overlayText = document.getElementById('devOverlayText').value.trim();
         if (!realTitle || !realUrl) return alert("يرجى إدخال اسم الحدث والرابط الفعلي!");
         
         const processed = processUniversalUrl(realUrl);
@@ -847,12 +890,14 @@
             contentType: processed.type,
             blurX: (dragBox.offsetLeft / previewBox.clientWidth) * 100,
             blurY: (dragBox.offsetTop / previewBox.clientHeight) * 100,
-            hasBlur: true, 
+            hasBlur: true,
+            overlayText: overlayText,
             publisher: persistentId
         }).then(() => {
             showMsg("تم نشر المحتوى بنجاح!");
             document.getElementById('devRealTitle').value = '';
             document.getElementById('devRealUrl').value = '';
+            document.getElementById('devOverlayText').value = '';
         });
     };
 
@@ -867,7 +912,7 @@
             if ((data.currentLinks || 0) >= (data.allowedLinks || 1)) return alert("لقد وصلت للحد الأقصى للروابط!");
             
             update(userRef, { points: increment(-10), currentLinks: increment(1) }).then(() => {
-                push(ref(db, 'matches'), { title, url: processed.url, contentType: processed.type, hasBlur: false, publisher: persistentId });
+                push(ref(db, 'matches'), { title, url: processed.url, contentType: processed.type, hasBlur: false, overlayText: "", publisher: persistentId });
                 showMsg("تم نشر الرابط بنجاح!");
                 document.getElementById('matchTitle').value = '';
                 document.getElementById('streamUrl').value = '';
@@ -875,17 +920,29 @@
         }, { onlyOnce: true });
     };
 
-    // ميزة الحذف والتعديل
+    // الحذف والتعديل
     window.deleteMatch = function(matchKey) {
         if (confirm("هل أنت متأكد من رغبتك في حذف هذا المحتوى نهائياً؟")) {
             remove(ref(db, 'matches/' + matchKey)).then(() => showMsg("تم حذف المحتوى بنجاح."));
         }
     };
 
-    window.openEditModal = function(matchKey, currentTitle, currentUrl) {
+    window.openEditModal = function(matchKey, currentTitle, currentUrl, currentOverlayText, hasBlur, blurX, blurY) {
         document.getElementById('editMatchKey').value = matchKey;
         document.getElementById('editTitleInput').value = currentTitle;
         document.getElementById('editUrlInput').value = currentUrl;
+        document.getElementById('editOverlayText').value = currentOverlayText || '';
+
+        // ضبط مكان الأفيكس الحالي في نافذة التعديل
+        if (hasBlur) {
+            editDragBox.style.left = (blurX * editPreviewBox.clientWidth / 100) + 'px';
+            editDragBox.style.top = (blurY * editPreviewBox.clientHeight / 100) + 'px';
+            editDragBox.style.display = 'flex';
+        } else {
+            editDragBox.style.left = '20px';
+            editDragBox.style.top = '20px';
+        }
+
         document.getElementById('editModal').style.display = 'flex';
     };
 
@@ -897,17 +954,29 @@
         const key = document.getElementById('editMatchKey').value;
         const newTitle = document.getElementById('editTitleInput').value.trim();
         const newUrl = document.getElementById('editUrlInput').value.trim();
+        const newOverlayText = document.getElementById('editOverlayText').value.trim();
 
         if (!newTitle || !newUrl) return alert("يرجى إكمال الحقول المطلوبة!");
 
         const processed = processUniversalUrl(newUrl);
-        update(ref(db, 'matches/' + key), {
+        
+        let updateData = {
             title: newTitle,
             url: processed.url,
-            contentType: processed.type
-        }).then(() => {
+            contentType: processed.type,
+            overlayText: newOverlayText
+        };
+
+        // إذا كان هناك أفيكس مسبقاً، قم بتحديث إحداثياته الجديدة بناءً على مكان السحب
+        if (editDragBox.style.display !== 'none') {
+            updateData.blurX = (editDragBox.offsetLeft / editPreviewBox.clientWidth) * 100;
+            updateData.blurY = (editDragBox.offsetTop / editPreviewBox.clientHeight) * 100;
+            updateData.hasBlur = true;
+        }
+
+        update(ref(db, 'matches/' + key), updateData).then(() => {
             closeEditModal();
-            showMsg("تم تحديث وبث المحتوى بنجاح! 🔄");
+            showMsg("تم تحديث المحتوى والأفيكس والنص بنجاح! 🔄");
         });
     };
 
@@ -937,6 +1006,7 @@
                     <div class="media-container">
                         ${mediaHtml}
                         ${match.hasBlur ? `<div style="position: absolute; top: ${match.blurY}%; left: ${match.blurX}%; width: 120px; height: 45px; background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; pointer-events: none;"></div>` : ''}
+                        ${match.overlayText ? `<div style="position: absolute; bottom: 15px; right: 15px; background: rgba(0,0,0,0.7); color: #fff; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px); pointer-events: none; z-index: 5;">📌 ${match.overlayText}</div>` : ''}
                     </div>
                     <div class="stream-footer-info">
                         <span>هذا المحتوى بواسطة سفوان سبورت</span>
@@ -945,7 +1015,7 @@
                     <div class="legal-notice">الموقع وسيط لنقل المحتوى لا أكثر وغير مسؤول عن أي محتوى غير قانوني ينشره صاحب البث.</div>
                     ${canManage ? `
                         <div style="display: flex; gap: 10px; margin-top: 12px;">
-                            <button class="btn-warning" style="flex: 1;" onclick="openEditModal('${key}', '${match.title.replace(/'/g, "\\'")}', '${match.url}')">تعديل المحتوى ✏️</button>
+                            <button class="btn-warning" style="flex: 1;" onclick="openEditModal('${key}', '${match.title.replace(/'/g, "\\'")}', '${match.url}', '${(match.overlayText || '').replace(/'/g, "\\'")}', ${match.hasBlur || false}, ${match.blurX || 20}, ${match.blurY || 20})">تعديل المحتوى والأفيكس ✏️</button>
                             <button class="btn-danger" style="flex: 1;" onclick="deleteMatch('${key}')">حذف المحتوى 🗑️</button>
                         </div>
                     ` : ''}
