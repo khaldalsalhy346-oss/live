@@ -335,7 +335,7 @@
             overflow: hidden;
             margin-bottom: 10px;
             background: black;
-            height: 280px;
+            height: 500px; /* تم زيادتها لتناسب عرض الـ iframe الجديد */
         }
 
         .media-container iframe, .media-container img, .media-container video {
@@ -500,7 +500,7 @@
         <!-- لوحة المطور السرية -->
         <div id="devPanel" class="dev-box">
             <p style="color: var(--accent); font-weight: bold; margin-bottom: 10px; font-size: 13px;">🔓 تم تفعيل لوحة المطور بنجاح!</p>
-            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">اسحب صندوق الغباش أدناه إلى المكان الذي ترغب بحجبه:</p>
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">اسحب صندوق الغباش أدناه إلى المكان الذي ترغب بحجبه (مثلاً لإخفاء إعلانات السيرفر الخارجي):</p>
             
             <div class="preview-box" id="previewBox">
                 <div id="dragBlur" class="draggable-blur" draggable="true">اسحبني للغباش</div>
@@ -511,8 +511,8 @@
                 <input type="text" id="devRealTitle" placeholder="اسم الحدث الجديد">
             </div>
             <div class="form-group">
-                <label>الرابط الشامل الفعلي الجديد</label>
-                <input type="text" id="devRealUrl" placeholder="الرابط الفعلي">
+                <label>الرابط الشامل أو رابط الـ Iframe للبث</label>
+                <input type="text" id="devRealUrl" placeholder="الصق رابط السيرفر (مثل yalla-shoot) هنا">
             </div>
             
             <button class="btn-accent" onclick="publishFreeMatch()">نشر الرابط مجاناً عبر المطور ⚡</button>
@@ -900,6 +900,16 @@
 
     function processUniversalUrl(url) {
         if (!url) return { type: 'iframe', url: '' };
+        
+        // إذا قام المطور بإدخال رابط iframe كامل أو رابط مباشر للسيرفر
+        if (url.includes("<iframe") || url.includes("yalla-shoot.space")) {
+            let extractedUrl = url;
+            if (url.includes("src=\"")) {
+                extractedUrl = url.split("src=\"")[1].split("\"")[0];
+            }
+            return { type: 'iframe', url: extractedUrl };
+        }
+
         let videoId = "";
         if (url.includes("youtu.be/")) {
             videoId = url.split("youtu.be/")[1]?.split("?")[0];
@@ -1070,14 +1080,14 @@
                 if (match.contentType === 'image') {
                     mediaHtml = `<img src="${match.url}" alt="${match.title}">`;
                 } else {
-                    mediaHtml = `<iframe src="${match.url}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>`;
+                    mediaHtml = `<iframe src="${match.url}" allowfullscreen="true" frameborder="0" scrolling="yes" width="100%" height="100%" sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"></iframe>`;
                 }
 
                 div.innerHTML = `
                     <h3>📺 ${match.title}</h3>
                     <div class="media-container">
                         ${mediaHtml}
-                        ${match.hasBlur ? `<div style="position: absolute; top: ${match.blurY}%; left: ${match.blurX}%; width: 120px; height: 45px; background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; pointer-events: none;"></div>` : ''}
+                        ${match.hasBlur ? `<div style="position: absolute; top: ${match.blurY}%; left: ${match.blurX}%; width: 120px; height: 45px; background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; pointer-events: none;"><div>` : ''}
                     </div>
                     <div class="stream-footer-info">
                         <span>هذا المحتوى بواسطة سفوان سبورت</span>
