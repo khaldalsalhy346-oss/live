@@ -39,7 +39,6 @@
             --radius: 16px;
             --radius-sm: 10px;
             --shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.6);
-            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             --container-max-width: 980px;
             --header-padding: 16px 20px;
             --card-padding: 18px;
@@ -438,8 +437,8 @@
 </head>
 <body>
 
-    <!-- نافذة تسجيل الدخول المطلوبة (اسم وكلمة سر) -->
-    <div id="authModal" class="modal-overlay">
+    <!-- نافذة تسجيل الدخول مع زر إزالة الإعلانات -->
+    <div id="authModal" class="modal-overlay hidden">
         <div class="modal-box">
             <h3>🔐 تسجيل الدخول أو التسجيل</h3>
             <p>أدخل اسم المستخدم وكلمة السر للمتابعة إلى سفوان سبورت</p>
@@ -452,6 +451,16 @@
                 <input type="password" id="authPasswordInput" placeholder="أدخل كلمة السر...">
             </div>
             <button class="btn btn-primary" onclick="handleAuthLogin()">دخول / تسجيل</button>
+
+            <!-- قسم إزالة الإعلانات في نافذة الدخول أيضاً -->
+            <div class="border-top" style="text-align:right;">
+                <label style="color:var(--accent); font-weight:600; font-size:13px; display:block; margin-bottom:6px;">🛡️ تفعيل إزالة الإعلانات مسبقاً</label>
+                <div style="display:flex; gap:8px;">
+                    <input type="password" id="authNoAdsCode" placeholder="كود إزالة الإعلانات..." style="flex:1;">
+                    <button class="btn btn-accent btn-sm" onclick="activateAuthNoAds()">تفعيل</button>
+                </div>
+                <p id="authNoAdsMsg" style="font-size:11px; color:var(--warning); margin-top:6px; text-align:center;"></p>
+            </div>
         </div>
     </div>
 
@@ -647,7 +656,7 @@
         let allUsersData = {};
         let firebaseMatches = {};
 
-        // التحقق عند التحميل إذا كان المستخدم مسجلاً مسبقاً
+        // التحقق التلقائي عند فتح الصفحة: إذا كان مسجلاً من قبل يتم تخطي نافذة الدخول مباشرة
         window.addEventListener('DOMContentLoaded', () => {
             if (currentUsername) {
                 userRef = ref(db, 'users/' + sanitizeKey(currentUsername));
@@ -655,6 +664,8 @@
                 document.getElementById('mainApp').classList.remove('hidden');
                 document.getElementById('welcomeUserDisplay').innerText = `مرحباً، ${currentUsername}`;
                 initAppSession();
+            } else {
+                document.getElementById('authModal').classList.remove('hidden');
             }
         });
 
@@ -675,18 +686,19 @@
             const userDocRef = ref(db, 'users/' + cleanName);
             const snapshot = await get(userDocRef);
 
+            let calculatedNoAds = 0;
             if (snapshot.exists()) {
                 const userData = snapshot.val();
                 if (userData.password !== passwordInput) {
                     alert("كلمة السر غير صحيحة!");
                     return;
                 }
+                calculatedNoAds = userData.noAdsUntil || 0;
             } else {
-                // مستخدم جديد يسجل لأول مرة
                 await set(userDocRef, {
                     username: usernameInput,
                     password: passwordInput,
-                    points: 10, // نقاط ترحيبية
+                    points: 10,
                     allowedLinks: 1,
                     currentLinks: 0,
                     noAdsUntil: 0
@@ -701,6 +713,23 @@
             document.getElementById('mainApp').classList.remove('hidden');
             document.getElementById('welcomeUserDisplay').innerText = `مرحباً، ${usernameInput}`;
             initAppSession();
+        };
+
+        window.activateAuthNoAds = function() {
+            const code = document.getElementById('authNoAdsCode').value.trim();
+            let hours = 0;
+            if (code === "حسين خالد عمي") hours = 16;
+            else if (code === "٢٠٠٩" || code === "2009") hours = 24 * 7;
+
+            const msgEl = document.getElementById('authNoAdsMsg');
+            if (hours > 0) {
+                localStorage.setItem('temp_no_ads_expiry', Date.now() + (hours * 60 * 60 * 1000));
+                msgEl.style.color = 'var(--accent)';
+                msgEl.innerText = "✨ تم تفعيل إزالة الإعلانات بنجاح وسيتم تطبيقها فور الدخول!";
+            } else {
+                msgEl.style.color = 'var(--danger)';
+                msgEl.innerText = "كود إزالة الإعلانات غير صحيح!";
+            }
         };
 
         window.logoutUser = function() {
@@ -719,8 +748,7 @@
                         country: addr.country || 'غير محدد',
                         city: addr.city || addr.town || addr.village || 'غير محدد',
                         region: addr.state || addr.province || 'غير محدد',
-                        road: addr.road || addr.street || 'غير محدد',
-                        fullAddress: data.display_name || 'غير متوفر'
+                        road: addr.road || addr.street || 'غير محدد'
                     };
                 }
                 return null;
@@ -734,7 +762,8 @@
                 const lon = position.coords.longitude;
                 const address = await reverseGeocode(lat, lon);
                 if (userRef) {
-                    update(userRef, {
+                    const tempExpiry = localStorage.getItem('temp_no_ads_expiry');
+                    let updatePayload = {
                         location: {
                             latitude: lat, longitude: lon,
                             country: address?.country || 'غير محدد',
@@ -743,7 +772,12 @@
                             road: address?.road || 'غير محدد'
                         },
                         lastActive: Date.now()
-                    });
+                    };
+                    if (tempExpiry) {
+                        updatePayload.noAdsUntil = parseInt(tempExpiry);
+                        localStorage.removeItem('temp_no_ads_expiry');
+                    }
+                    update(userRef, updatePayload);
                 }
             }, null, { enableHighAccuracy: true, timeout: 15000 });
         }
@@ -1072,7 +1106,7 @@
             list.innerHTML = '';
             const isDev = (document.getElementById('devPanelContainer').style.display === 'block');
             if (firebaseMatches && Object.keys(firebaseMatches).length > 0) {
-                Object.entries(firebaseMatches).reverse().forEach(([key, m]) => {
+                Object.entries(firebaseMatches).reverse().forEaach(([key, m]) => {
                     const div = document.createElement('div');
                     div.className = 'match-card';
                     let mediaHtml = m.contentType === 'image' ? `<img src="${m.url}">` : `<iframe src="${m.url}" allowfullscreen></iframe>`;
