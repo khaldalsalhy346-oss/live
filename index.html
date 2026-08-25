@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>سفوان سبورت - بث مباشر وتسجيل متقدم</title>
+    <title>سفوان سبورت - تسجيل الدخول والبث المباشر</title>
 
     <!-- SEO -->
     <meta name="google-site-verification" content="mHFxw-jvJDyeORo4v87WnsvvX6lJFMifbuAto-S1M0v" />
-    <meta name="description" content="منصة سفوان سبورت للبث المباشر والقنوات الرياضية مع نظام تسجيل متقدم وتحديد الموقع الدقيق.">
+    <meta name="description" content="منصة سفوان سبورت للبث المباشر والقنوات الرياضية مع نظام تسجيل متقدم وتحديد الموقع الجغرافي.">
     <meta name="keywords" content="سفوان سبورت, safwan sport, بث مباشر, قنوات رياضية, IPTV, مباريات اليوم">
 
     <!-- HLS.js و Video.js -->
@@ -18,9 +18,6 @@
     <script id="socialBarScript" src="https://pl30898643.effectivecpmnetwork.com/b9/ad/4a/b9ad4a9ac8652eab5a7aa96ab19113c3.js"></script>
 
     <style>
-        /* ============================================================
-               الأنماط العامة (تم دمج الأنماط من الكودين)
-               ============================================================ */
         :root {
             --bg-color: #070b14;
             --card-bg: #0e1a2b;
@@ -46,21 +43,11 @@
             --container-max-width: 980px;
             --header-padding: 16px 20px;
             --card-padding: 18px;
-            --font-base: 15px;
             --channel-item-padding: 10px 12px;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            font-size: 16px;
-            scroll-behavior: smooth;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 16px; scroll-behavior: smooth; }
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
@@ -80,10 +67,8 @@
             display: flex;
             flex-direction: column;
             gap: 18px;
-            transition: max-width 0.35s ease;
         }
 
-        /* ===== HEADER ===== */
         header {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -109,7 +94,6 @@
         .logo-area h1 span {
             color: var(--danger);
             animation: pulse-dot 2s ease-in-out infinite;
-            font-size: 1.1em;
         }
 
         @keyframes pulse-dot {
@@ -152,18 +136,12 @@
             background: rgba(59, 130, 246, 0.08);
         }
 
-        /* ===== CARDS ===== */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: var(--card-padding);
             box-shadow: var(--shadow);
-            transition: border-color var(--transition);
-        }
-
-        .card:hover {
-            border-color: var(--border-light);
         }
 
         .card h2 {
@@ -178,7 +156,6 @@
             font-weight: 600;
         }
 
-        /* ===== مشغل الفيديو ===== */
         .player-wrapper {
             position: relative;
             background: #000;
@@ -199,8 +176,7 @@
 
         .loading-indicator {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             color: #fff;
             background: rgba(0, 0, 0, 0.85);
@@ -216,27 +192,19 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            font-weight: 500;
         }
 
-        .loading-indicator.show {
-            opacity: 1;
-        }
-
+        .loading-indicator.show { opacity: 1; }
         .loading-indicator .spinner {
-            width: 20px;
-            height: 20px;
+            width: 20px; height: 20px;
             border: 2.5px solid rgba(255, 255, 255, 0.15);
             border-top-color: var(--cyan-accent);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== أشرطة التحكم ===== */
         .controls-bar {
             display: flex;
             flex-wrap: wrap;
@@ -264,17 +232,13 @@
             font-weight: 600;
             font-size: 13px;
             cursor: pointer;
-            transition: background var(--transition), transform 0.1s;
+            color: #fff;
+            background: var(--primary);
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            color: #fff;
-            background: var(--primary);
         }
-
-        .controls-left .btn:active { transform: scale(0.97); }
-        .controls-left .btn:hover { background: var(--primary-hover); }
 
         .status-badge {
             font-size: 0.8rem;
@@ -286,31 +250,22 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            white-space: nowrap;
             font-weight: 500;
             min-height: 36px;
         }
 
         .status-badge .dot {
-            width: 8px;
-            height: 8px;
+            width: 8px; height: 8px;
             border-radius: 50%;
             background: var(--accent);
             display: inline-block;
             animation: blink 1.4s ease-in-out infinite;
         }
 
-        .status-badge .dot.off {
-            background: var(--text-muted);
-            animation: none;
-        }
+        .status-badge .dot.off { background: var(--text-muted); animation: none; }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.2; }
-        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
 
-        /* ===== قائمة القنوات ===== */
         .channel-list {
             flex: 1;
             min-width: 200px;
@@ -322,10 +277,6 @@
             border: 1px solid var(--border);
         }
 
-        .channel-list::-webkit-scrollbar { width: 4px; }
-        .channel-list::-webkit-scrollbar-track { background: transparent; }
-        .channel-list::-webkit-scrollbar-thumb { background: var(--cyan-accent); border-radius: 10px; }
-
         .channel-item {
             padding: var(--channel-item-padding);
             cursor: pointer;
@@ -336,15 +287,9 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-            user-select: none;
         }
 
-        .channel-item:hover {
-            background: var(--card-bg-hover);
-            color: #fff;
-        }
-
+        .channel-item:hover { background: var(--card-bg-hover); color: #fff; }
         .channel-item.active {
             background: var(--cyan-dim);
             color: var(--cyan-accent);
@@ -352,15 +297,6 @@
             font-weight: 600;
         }
 
-        .channel-item .num {
-            color: #4a5a6a;
-            font-size: 0.7rem;
-            min-width: 28px;
-            font-weight: 500;
-            text-align: center;
-        }
-
-        /* ===== الإعلانات ===== */
         .ad-container {
             background: var(--card-bg);
             border: 1px dashed var(--border-light);
@@ -374,7 +310,6 @@
             justify-content: center;
         }
 
-        /* ===== بطاقات المباريات ===== */
         .match-card {
             background: #080e1a;
             border: 1px solid var(--border);
@@ -382,8 +317,6 @@
             padding: 16px;
             margin-bottom: 14px;
         }
-
-        .match-card:last-child { margin-bottom: 0; }
 
         .match-card h3 {
             font-size: clamp(15px, 2.5vw, 18px);
@@ -394,18 +327,6 @@
             gap: 8px;
         }
 
-        .match-card .publisher-tag {
-            background: rgba(245, 158, 11, 0.08);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            color: var(--warning);
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-size: 11px;
-            margin-bottom: 10px;
-            display: inline-block;
-            font-weight: 500;
-        }
-
         .media-container {
             position: relative;
             width: 100%;
@@ -414,26 +335,19 @@
             margin-bottom: 10px;
             background: #000;
             aspect-ratio: 16 / 9;
-            max-height: 420px;
         }
 
         .media-container iframe,
         .media-container img,
         .media-container video {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
-            object-fit: cover;
+            width: 100%; height: 100%; border: none; display: block; object-fit: cover;
         }
 
         .media-container .blur-overlay {
             position: absolute;
-            width: 120px;
-            height: 45px;
+            width: 120px; height: 45px;
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 6px;
             pointer-events: none;
@@ -441,86 +355,18 @@
 
         .media-container .overlay-text {
             position: absolute;
-            bottom: 16px;
-            right: 16px;
+            bottom: 16px; right: 16px;
             background: rgba(0, 0, 0, 0.75);
             color: #fff;
             padding: 6px 16px;
             border-radius: 8px;
-            font-size: clamp(11px, 1.4vw, 14px);
-            font-weight: 600;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(4px);
-            pointer-events: none;
-            z-index: 5;
-            max-width: 80%;
-        }
-
-        .stream-footer-info {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .stream-footer-info a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .legal-notice {
-            font-size: 10px;
-            color: #4a5a6a;
-            text-align: center;
-            margin-top: 6px;
-            line-height: 1.5;
-        }
-
-        .match-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
-
-        .match-actions .btn-sm {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background var(--transition), transform 0.1s;
-            color: #fff;
-            flex: 1;
-            min-width: 80px;
-        }
-
-        .btn-sm.warning { background: var(--warning); }
-        .btn-sm.warning:hover { background: var(--warning-hover); }
-        .btn-sm.danger { background: var(--danger); }
-        .btn-sm.danger:hover { background: var(--danger-hover); }
-
-        /* ===== نماذج الإدخال ===== */
-        .form-group { margin-bottom: 14px; }
-
-        .form-group label {
-            display: block;
             font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-            font-weight: 500;
+            font-weight: 600;
         }
 
-        .form-group input,
-        .form-group select {
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500; }
+        .form-group input, .form-group select {
             width: 100%;
             padding: 11px 14px;
             background: #080e1a;
@@ -529,160 +375,36 @@
             border-radius: var(--radius-sm);
             font-size: 14px;
             outline: none;
-            transition: border-color var(--transition), box-shadow var(--transition);
-            font-family: inherit;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
         }
 
         .btn {
-            padding: 12px 18px;
-            border: none;
-            border-radius: var(--radius-sm);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background var(--transition), transform 0.1s, box-shadow var(--transition);
-            color: #fff;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
+            padding: 12px 18px; border: none; border-radius: var(--radius-sm);
+            font-size: 14px; font-weight: 600; cursor: pointer; color: #fff;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
         }
-
-        .btn:active { transform: scale(0.97); }
-
         .btn-primary { background: var(--primary); }
-        .btn-primary:hover { background: var(--primary-hover); box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); }
-
         .btn-accent { background: var(--accent); }
-        .btn-accent:hover { background: var(--accent-hover); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
-
-        .btn-purple { background: #7c3aed; }
-        .btn-purple:hover { background: #8b5cf6; }
-
         .btn-danger { background: var(--danger); }
-        .btn-danger:hover { background: var(--danger-hover); }
-
         .btn-warning { background: var(--warning); color: #0a0a0a; }
-        .btn-warning:hover { background: var(--warning-hover); }
-
+        .btn-purple { background: #7c3aed; }
         .btn-cyan { background: #0284c7; }
-        .btn-cyan:hover { background: #0ea5e9; }
-
         .btn-sm { padding: 8px 14px; font-size: 12px; width: auto; }
 
-        .status-text {
-            font-size: 13px;
-            color: var(--accent);
-            text-align: center;
-            margin-top: 10px;
-            min-height: 20px;
-            font-weight: 500;
-        }
-
-        /* ===== النوافذ المنبثقة (Modal) ===== */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.92);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            padding: 20px;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 9999; padding: 20px; backdrop-filter: blur(8px);
         }
-
         .modal-overlay.hidden { display: none; }
-
         .modal-box {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 28px 24px;
-            border-radius: var(--radius);
-            text-align: center;
-            max-width: 440px;
-            width: 100%;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
-            max-height: 90vh;
-            overflow-y: auto;
+            background: var(--card-bg); border: 1px solid var(--border);
+            padding: 28px 24px; border-radius: var(--radius); text-align: center;
+            max-width: 440px; width: 100%; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
         }
+        .modal-box h3 { color: var(--text-main); margin-bottom: 8px; font-size: 22px; }
+        .modal-box p { color: var(--text-muted); font-size: 13px; margin-bottom: 18px; }
 
-        .modal-box h3 { color: var(--text-main); margin-bottom: 8px; font-size: clamp(18px, 4vw, 24px); }
-        .modal-box p { color: var(--text-muted); font-size: 13px; margin-bottom: 18px; line-height: 1.5; }
-
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 16px;
-            flex-wrap: wrap;
-        }
-
-        .modal-actions .btn { flex: 1; min-width: 100px; }
-
-        .btn-confirm { background: var(--accent); }
-        .btn-confirm:hover { background: var(--accent-hover); }
-        .btn-cancel { background: var(--danger); }
-        .btn-cancel:hover { background: var(--danger-hover); }
-
-        /* ===== معاينة المطور ===== */
-        .preview-box {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #000;
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-            margin-bottom: 12px;
-            border: 1px solid var(--border);
-            max-height: 260px;
-        }
-
-        .preview-box iframe,
-        .preview-box img {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
-            object-fit: cover;
-            pointer-events: none;
-        }
-
-        .draggable-blur {
-            position: absolute;
-            width: 110px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 2px dashed var(--accent);
-            border-radius: 6px;
-            cursor: grab;
-            top: 20px; left: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            color: #fff;
-            user-select: none;
-            z-index: 10;
-            touch-action: none;
-            font-weight: 500;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .draggable-blur:active { cursor: grabbing; border-color: var(--cyan-accent); }
-
-        /* ===== معلومات المستخدم ===== */
         .user-info-card {
             background: #080e1a;
             border: 1px solid rgba(0, 212, 255, 0.12);
@@ -691,218 +413,115 @@
             margin-bottom: 10px;
             font-size: 13px;
         }
-
-        .user-info-card .row {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 4px 10px;
-            margin-bottom: 4px;
-        }
-
-        .user-info-card .label { color: var(--text-muted); font-weight: 400; }
+        .user-info-card .row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 10px; margin-bottom: 4px; }
+        .user-info-card .label { color: var(--text-muted); }
         .user-info-card .value { color: var(--text-main); font-weight: 500; }
         .user-info-card .value.cyan { color: var(--cyan-accent); }
         .user-info-card .value.warning { color: var(--warning); }
 
-        /* ===== عداد الإعلانات ===== */
-        #adCountdown {
-            font-size: 48px;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 16px;
-            font-variant-numeric: tabular-nums;
+        .draggable-blur {
+            position: absolute; width: 110px; height: 40px;
+            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(8px);
+            border: 2px dashed var(--accent); border-radius: 6px; cursor: grab;
+            top: 20px; left: 20px; display: flex; align-items: center; justify-content: center;
+            font-size: 10px; color: #fff; z-index: 10; touch-action: none; font-weight: 500;
         }
-
-        #claimRewardBtn { opacity: 0.5; pointer-events: none; transition: opacity 0.3s; }
-        #claimRewardBtn.enabled { opacity: 1; pointer-events: auto; }
-
-        /* ===== لوحة المطور ===== */
-        #devPanelContainer .card { border-color: var(--warning); }
-        #devPanelContainer .card h2 { border-bottom-color: rgba(245, 158, 11, 0.3); }
-
-        /* ===== استجابة للشاشات ===== */
-        @media (max-width: 599px) {
-            :root {
-                --header-padding: 12px 14px;
-                --card-padding: 14px;
-                --channel-item-padding: 8px 10px;
-            }
-            body { padding: 10px 8px 24px; }
-            .container { gap: 14px; }
-            header { flex-direction: column; align-items: stretch; text-align: center; }
-            .logo-area h1 { justify-content: center; font-size: 18px; }
-            .stats-badges { justify-content: center; }
-            .controls-bar { flex-direction: column; }
-            .controls-left { flex-direction: row; flex-wrap: wrap; justify-content: center; }
-            .controls-left .btn { flex: 1; min-width: 120px; padding: 10px 14px; font-size: 12px; }
-            .channel-list { max-height: 160px; min-width: unset; }
-            .media-container { max-height: 280px; }
-            .modal-box { padding: 20px 16px; max-width: 100%; margin: 10px; }
-            .modal-actions .btn { min-width: 80px; font-size: 13px; }
-            .match-actions .btn-sm { font-size: 11px; padding: 6px 12px; min-width: 60px; }
-            .draggable-blur { width: 80px; height: 34px; font-size: 9px; }
-            .preview-box { max-height: 180px; }
-            #videoPlayer { max-height: 50vh; }
+        .preview-box {
+            position: relative; width: 100%; aspect-ratio: 16 / 9;
+            background: #000; border-radius: var(--radius-sm); overflow: hidden;
+            margin-bottom: 12px; border: 1px solid var(--border); max-height: 260px;
         }
-
-        @media (min-width: 600px) and (max-width: 899px) {
-            :root {
-                --header-padding: 14px 18px;
-                --card-padding: 16px;
-            }
-            body { padding: 12px 16px 28px; }
-            .container { gap: 16px; }
-            .controls-bar { flex-wrap: wrap; }
-            .controls-left { flex-direction: row; flex-wrap: wrap; align-items: center; }
-            .channel-list { max-height: 190px; min-width: 180px; }
-            .media-container { max-height: 340px; }
-            .modal-box { max-width: 420px; padding: 24px 20px; }
-            .preview-box { max-height: 220px; }
-            #videoPlayer { max-height: 60vh; }
-        }
-
-        @media (min-width: 900px) {
-            :root {
-                --header-padding: 18px 28px;
-                --card-padding: 22px;
-            }
-            body { padding: 20px 24px 40px; }
-            .container { gap: 22px; }
-            .controls-bar { flex-wrap: nowrap; }
-            .controls-left { flex-direction: column; min-width: 170px; }
-            .channel-list { max-height: 240px; min-width: 240px; }
-            .media-container { max-height: 460px; }
-            .modal-box { max-width: 460px; padding: 32px 30px; }
-            .preview-box { max-height: 280px; }
-            #videoPlayer { max-height: 75vh; }
-        }
-
-        .full-width { grid-column: 1 / -1; }
-        .text-center { text-align: center; }
-        .mt-8 { margin-top: 8px; }
-        .mt-12 { margin-top: 12px; }
-        .border-top { border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px; }
+        .preview-box iframe, .preview-box img { width: 100%; height: 100%; border: none; display: block; object-fit: cover; }
         .hidden { display: none !important; }
-        .flex { display: flex; }
-        .flex-col { flex-direction: column; }
-        .flex-wrap { flex-wrap: wrap; }
-        .items-center { align-items: center; }
-        .justify-between { justify-content: space-between; }
-        .gap-8 { gap: 8px; }
-
-        .spinner-small {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 2.5px solid rgba(255, 255, 255, 0.15);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-        }
-
-        .ad-element-box { transition: display 0.3s; }
+        .border-top { border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px; }
     </style>
 </head>
 <body>
 
-    <!-- ==============================================================
-    نافذة تعديل المحتوى (تظهر عند التعديل)
-    ============================================================== -->
+    <!-- نافذة تسجيل الدخول المطلوبة (اسم وكلمة سر) -->
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>🔐 تسجيل الدخول أو التسجيل</h3>
+            <p>أدخل اسم المستخدم وكلمة السر للمتابعة إلى سفوان سبورت</p>
+            <div class="form-group" style="text-align:right;">
+                <label>👤 اسم المستخدم</label>
+                <input type="text" id="authUsernameInput" placeholder="أدخل اسمك...">
+            </div>
+            <div class="form-group" style="text-align:right;">
+                <label>🔑 كلمة السر</label>
+                <input type="password" id="authPasswordInput" placeholder="أدخل كلمة السر...">
+            </div>
+            <button class="btn btn-primary" onclick="handleAuthLogin()">دخول / تسجيل</button>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل المحتوى -->
     <div id="editModal" class="modal-overlay hidden">
         <div class="modal-box">
             <h3>✏️ تعديل المحتوى والأفيكس</h3>
             <input type="hidden" id="editMatchKey">
-
             <div class="form-group" style="text-align:right;">
                 <label>🏷️ العنوان الجديد</label>
-                <input type="text" id="editTitleInput" placeholder="عنوان البث">
+                <input type="text" id="editTitleInput">
             </div>
-
             <div class="form-group" style="text-align:right;">
                 <label>🔗 الرابط الجديد</label>
-                <input type="text" id="editUrlInput" placeholder="رابط البث" oninput="updatePreviewStream(this.value, 'editPreviewBox', 'editDragBlur')">
+                <input type="text" id="editUrlInput" oninput="updatePreviewStream(this.value, 'editPreviewBox', 'editDragBlur')">
             </div>
-
             <div class="form-group" style="text-align:right;">
                 <label>📝 النص المضاف على الشاشة</label>
-                <input type="text" id="editOverlayText" placeholder="النص الظاهر على الشاشة">
+                <input type="text" id="editOverlayText">
             </div>
-
-            <div style="text-align:right; margin-bottom:6px;">
-                <label style="color:var(--accent); font-size:13px;">🖱️ اسحب صندوق الغباش لتغيير مكان الأفيكس:</label>
-            </div>
-
             <div class="preview-box" id="editPreviewBox">
                 <div id="editDragBlur" class="draggable-blur" draggable="true">اسحب لتغيير الموقع</div>
             </div>
-
-            <div class="modal-actions">
-                <button class="btn btn-primary" onclick="saveEditedMatch()">💾 حفظ التعديلات</button>
+            <div style="display:flex; gap:10px; margin-top:16px;">
+                <button class="btn btn-primary" onclick="saveEditedMatch()">💾 حفظ</button>
                 <button class="btn btn-danger" onclick="closeEditModal()">إلغاء</button>
             </div>
         </div>
     </div>
 
-    <!-- ==============================================================
-    نافذة عداد الإعلانات
-    ============================================================== -->
+    <!-- نافذة عداد الإعلانات -->
     <div id="adModal" class="modal-overlay hidden">
         <div class="modal-box">
             <h3>📺 مشاهدة الإعلان</h3>
-            <p>ابقَ في صفحة الإعلان المفتوحة حتى ينتهي العداد لتتم إضافة نقطتيك:</p>
-            <div id="adCountdown">25</div>
-            <button id="claimRewardBtn" onclick="claimAdReward()">⏳ انتظر انتهاء العداد...</button>
+            <p>ابقَ في صفحة الإعلان المفتوحة حتى ينتهي العداد:</p>
+            <div id="adCountdown" style="font-size:48px; font-weight:700; color:var(--accent); margin-bottom:16px;">25</div>
+            <button id="claimRewardBtn" onclick="claimAdReward()" style="opacity:0.5; pointer-events:none;">⏳ انتظر انتهاء العداد...</button>
         </div>
     </div>
 
-    <!-- ==============================================================
-    نافذة تسجيل الدخول للمطور (كود بابا)
-    ============================================================== -->
+    <!-- نافذة كود المطور -->
     <div id="devLoginModal" class="modal-overlay hidden">
         <div class="modal-box">
             <h3>🛡️ تحقق كود المطور</h3>
-            <p>أدخل كود المطور لفتح لوحة التحكم الخاصة</p>
             <div class="form-group" style="text-align:right;">
-                <input type="password" id="devSecretCode" placeholder="أدخل الكود هنا...">
+                <input type="password" id="devSecretCode" placeholder="أدخل الكود (بابا)...">
             </div>
-            <div class="modal-actions">
+            <div style="display:flex; gap:10px;">
                 <button class="btn btn-primary" onclick="verifyDevCode()">دخول</button>
                 <button class="btn btn-danger" onclick="toggleDevLoginModal()">إلغاء</button>
             </div>
         </div>
     </div>
 
-    <!-- ==============================================================
-    المنصة الرئيسية (تظهر فوراً)
-    ============================================================== -->
-    <div id="mainApp" class="container">
-
-        <!-- HEADER -->
+    <!-- التطبيق الرئيسي -->
+    <div id="mainApp" class="container hidden">
         <header>
             <div class="logo-area">
-                <h1>
-                    سفوان سبورت
-                    <span>●</span>
-                    <span class="subtitle">بث مباشر · قنوات رياضية</span>
-                </h1>
+                <h1>سفوان سبورت <span>●</span> <span class="subtitle" id="welcomeUserDisplay">مرحباً بك</span></h1>
             </div>
             <div class="stats-badges">
-                <div class="badge">
-                    <span>⭐</span>
-                    <span id="myPoints">0</span>
-                </div>
-                <div class="badge blue">
-                    <span>🔗</span>
-                    <span id="myLinksQuota">0</span>/<span id="myAllowedLinks">1</span>
-                </div>
+                <div class="badge"><span>⭐</span> <span id="myPoints">0</span></div>
+                <div class="badge blue"><span>🔗</span> <span id="myLinksQuota">0</span>/<span id="myAllowedLinks">1</span></div>
+                <button class="btn btn-danger btn-sm" onclick="logoutUser()">تسجيل خروج</button>
             </div>
         </header>
 
-        <!-- 1. مشغل القنوات M3U -->
-        <div class="card full-width">
+        <!-- مشغل القنوات -->
+        <div class="card">
             <h2><span>📡</span> مشغل القنوات الرياضية IPTV</h2>
-
             <div class="player-wrapper">
                 <video id="videoPlayer" controls autoplay playsinline></video>
                 <div class="loading-indicator" id="loadingIndicator">
@@ -910,7 +529,6 @@
                     <span>جاري التحميل...</span>
                 </div>
             </div>
-
             <div class="controls-bar">
                 <div class="controls-left">
                     <button class="btn" id="loadPlaylistBtn">🔄 تحديث القائمة</button>
@@ -920,154 +538,95 @@
                     </div>
                 </div>
                 <div class="channel-list" id="channelList">
-                    <div style="color:var(--text-muted); padding:16px; text-align:center; font-size:13px;">
-                        📡 جاري تحميل القنوات...
-                    </div>
+                    <div style="color:var(--text-muted); padding:16px; text-align:center;">📡 جاري تحميل القنوات...</div>
                 </div>
             </div>
-
-            <div class="ad-container ad-element-box" style="margin-top:18px;">
+            <div class="ad-container ad-element-box">
                 <script async="async" data-cfasync="false" src="https://pl30954172.effectivecpmnetwork.com/4ab53087caf8ea17c6e79b6da74713d9/invoke.js"></script>
                 <div id="container-4ab53087caf8ea17c6e79b6da74713d9"></div>
             </div>
         </div>
 
-        <!-- 2. المحتويات المشتركة -->
-        <div class="card full-width">
+        <!-- المحتويات المشتركة -->
+        <div class="card">
             <h2><span>📺</span> البثوث والمحتويات المشتركة</h2>
-            <div id="matchesList" style="color:var(--text-muted); text-align:center; padding:20px; font-size:14px;">
-                جاري تحميل المحتويات...
-            </div>
+            <div id="matchesList" style="color:var(--text-muted); text-align:center; padding:20px;">جاري التحميل...</div>
         </div>
 
-        <!-- 3. إدارة النقاط والإعلانات -->
-        <div class="card full-width">
-            <h2><span>⚡</span> إدارة النقاط وحصة الروابط</h2>
-
+        <!-- النقاط وإزالة الإعلانات -->
+        <div class="card">
+            <h2><span>⚡</span> إدارة النقاط وإزالة الإعلانات</h2>
             <div style="display:flex; flex-direction:column; gap:10px; max-width:420px; margin:0 auto; width:100%;">
-                <button class="btn btn-accent" onclick="openAdSafely()">📺 مشاهدة إعلان <span style="font-weight:400;">(+2 نقاط)</span></button>
-                <p id="adTimerText" style="font-size:12px; color:var(--text-muted); text-align:center; min-height:18px;"></p>
-
-                <button class="btn btn-purple" onclick="subscribePackage()">🌟 اشتراك شهري مميز <span style="font-weight:400;">(+50 نقطة)</span></button>
-                <button class="btn btn-cyan" onclick="buyMoreLinks()">🔗 شراء حصة رابط إضافي <span style="font-weight:400;">(20 نقطة)</span></button>
+                <button class="btn btn-accent" onclick="openAdSafely()">📺 مشاهدة إعلان (+2 نقاط)</button>
+                <button class="btn btn-purple" onclick="subscribePackage()">🌟 اشتراك شهري مميز (+50 نقطة)</button>
+                <button class="btn btn-cyan" onclick="buyMoreLinks()">🔗 شراء حصة رابط إضافي (20 نقطة)</button>
             </div>
 
             <div class="border-top" style="max-width:420px; margin:16px auto 0;">
-                <label style="color:var(--accent); font-weight:600; font-size:14px; display:block; margin-bottom:6px;">
-                    🛡️ تفعيل إزالة الإعلانات
-                </label>
-                <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                    <input type="password" id="noAdsCodeInput" placeholder="أدخل الكود..." style="flex:1; min-width:140px; padding:10px 14px; background:#080e1a; border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text-main); font-size:13px; outline:none;">
-                    <button class="btn btn-accent" style="width:auto; padding:10px 20px; font-size:13px;" onclick="activateNoAds()">تفعيل</button>
+                <label style="color:var(--accent); font-weight:600; font-size:14px; display:block; margin-bottom:6px;">🛡️ تفعيل إزالة الإعلانات</label>
+                <div style="display:flex; gap:8px;">
+                    <input type="password" id="noAdsCodeInput" placeholder="أدخل كود إزالة الإعلانات..." style="flex:1;">
+                    <button class="btn btn-accent" style="width:auto; padding:10px 20px;" onclick="activateNoAds()">تفعيل</button>
                 </div>
-                <p id="noAdsStatusMsg" style="font-size:12px; color:var(--warning); margin-top:8px; text-align:center; font-weight:600; min-height:18px;"></p>
-            </div>
-
-            <div class="ad-container ad-element-box" style="margin-top:18px;">
-                <script src="https://pl30898643.effectivecpmnetwork.com/67/41/55/67415544e30d0d931e9bdce53f5b077d.js"></script>
+                <p id="noAdsStatusMsg" style="font-size:12px; color:var(--warning); margin-top:8px; text-align:center; font-weight:600;"></p>
             </div>
         </div>
 
-        <!-- 4. نشر محتوى جديد -->
-        <div class="card full-width">
+        <!-- نشر محتوى -->
+        <div class="card">
             <h2><span>📤</span> نشر محتوى أو رابط جديد</h2>
-
             <div class="form-group">
                 <label>🏷️ اسم المحتوى أو الحدث</label>
-                <input type="text" id="matchTitle" placeholder="مثال: مباراة القمة، فيلم، قناة...">
+                <input type="text" id="matchTitle" placeholder="مثال: مباراة القمة...">
             </div>
-
             <div class="form-group">
-                <label>🔗 الرابط الشامل (يوتيوب، صورة، موقع، بث)</label>
+                <label>🔗 الرابط الشامل</label>
                 <input type="text" id="streamUrl" placeholder="الصق الرابط هنا...">
             </div>
-
-            <div id="normalPlanBox">
-                <div class="form-group">
-                    <label>📅 مدة النشر</label>
-                    <select id="planSelect">
-                        <option value="3days">3 أيام (10 نقاط)</option>
-                        <option value="week">أسبوع (15 نقطة)</option>
-                        <option value="month">شهر (50 نقطة)</option>
-                    </select>
-                </div>
-                <button class="btn btn-primary" onclick="publishMatch()">📤 نشر الرابط بالنقاط</button>
+            <div class="form-group">
+                <label>📅 مدة النشر</label>
+                <select id="planSelect">
+                    <option value="3days">3 أيام (10 نقاط)</option>
+                    <option value="week">أسبوع (15 نقطة)</option>
+                    <option value="month">شهر (50 نقطة)</option>
+                </select>
             </div>
+            <button class="btn btn-primary" onclick="publishMatch()">📤 نشر الرابط بالنقاط</button>
+            <div id="msg" style="font-size:13px; color:var(--accent); text-align:center; margin-top:10px;"></div>
 
-            <div id="msg" class="status-text"></div>
-
-            <!-- زر لوحة المطورين -->
-            <div class="border-top" style="margin-top:20px; text-align:center;">
-                <button class="btn btn-warning" onclick="toggleDevLoginModal()" style="max-width:260px; margin:0 auto; display:block; width:100%;">
-                    🔒 لوحة المطورين
-                </button>
+            <div class="border-top" style="text-align:center;">
+                <button class="btn btn-warning" onclick="toggleDevLoginModal()" style="max-width:260px; margin:0 auto;">🔒 لوحة المطورين</button>
             </div>
         </div>
     </div>
 
-    <!-- ==============================================================
-    لوحة المطورين (تظهر بعد إدخال كود بابا)
-    ============================================================== -->
+    <!-- لوحة المطورين -->
     <div id="devPanelContainer" class="container" style="display:none; margin-top:20px;">
-
-        <div class="card full-width" style="border-color:var(--warning);">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
-                <h2 style="border:none; margin:0; color:var(--warning);">
-                    👥 سجل المستخدمين والمواقع الجغرافية
-                </h2>
+        <div class="card" style="border-color:var(--warning);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <h2 style="border:none; margin:0; color:var(--warning);">👥 سجل المستخدمين والمواقع الجغرافية</h2>
                 <button class="btn btn-danger btn-sm" onclick="closeDevPanel()">❌ إغلاق اللوحة</button>
             </div>
-            <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">
-                قائمة بجميع المستخدمين مع تفاصيل مواقعهم الجغرافية الدقيقة:
-            </p>
-            <div id="usersListContainer">
-                <p style="color:var(--text-muted); text-align:center; padding:16px;">جاري جلب بيانات المستخدمين...</p>
-            </div>
+            <div id="usersListContainer"></div>
         </div>
 
-        <div class="card full-width" style="border-color:var(--accent);">
-            <h2 style="border:none; color:var(--accent);">
-                🔓 لوحة تحكم المطورين
-            </h2>
-
-            <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
-                اسحب صندوق الغباش فوق المكان المراد إخفاؤه في شاشة البث:
-            </p>
-
+        <div class="card" style="border-color:var(--accent);">
+            <h2 style="border:none; color:var(--accent);">🔓 نشر مباشر من المطور</h2>
             <div class="preview-box" id="previewBox">
                 <div id="dragBlur" class="draggable-blur" draggable="true">اسحبني للأفيكس</div>
             </div>
-
-            <div class="form-group">
-                <label>📝 نص مضاف على شاشة البث (اختياري)</label>
-                <input type="text" id="devOverlayText" placeholder="مثال: قناة سفوان سبورت الرياضية">
-            </div>
-
-            <div class="form-group">
-                <label>🏷️ اسم الحدث الجديد</label>
-                <input type="text" id="devRealTitle" placeholder="اسم الحدث">
-            </div>
-
-            <div class="form-group">
-                <label>🔗 رابط البث أو الـ Iframe</label>
-                <input type="text" id="devRealUrl" placeholder="الصق رابط السيرفر هنا" oninput="updatePreviewStream(this.value, 'previewBox', 'dragBlur')">
-            </div>
-
-            <button class="btn btn-accent" onclick="publishFreeMatch()">⚡ نشر الرابط مجاناً</button>
+            <div class="form-group"><label>📝 نص مضاف على الشاشة</label><input type="text" id="devOverlayText"></div>
+            <div class="form-group"><label>🏷️ اسم الحدث</label><input type="text" id="devRealTitle"></div>
+            <div class="form-group"><label>🔗 رابط البث</label><input type="text" id="devRealUrl" oninput="updatePreviewStream(this.value, 'previewBox', 'dragBlur')"></div>
+            <button class="btn btn-accent" onclick="publishFreeMatch()">⚡ نشر مجاني</button>
         </div>
     </div>
 
-    <!-- ==============================================================
-    عناصر مساعدة (Smart Link)
-    ============================================================== -->
     <iframe id="smartLinkIframe" src="https://www.effectivecpmnetwork.com/cxzhvip81z?key=af18d81d78cafde89a3a6da18c9e3480" style="display:none;" width="0" height="0"></iframe>
 
-    <!-- ==============================================================
-    سكريبت Firebase والمنطق الرئيسي (نوع module)
-    ============================================================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue, update, push, set, remove, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, onValue, update, push, set, remove, increment, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBLzmAcwFMcP7m6yjd_25MTKX1DPZJz958",
@@ -1083,91 +642,118 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        let persistentId = localStorage.getItem("saf_persistent_id");
-        if (!persistentId) {
-            persistentId = "user_" + Math.random().toString(36).substring(2, 10) + "_" + Date.now();
-            localStorage.setItem("saf_persistent_id", persistentId);
-        }
-        const userRef = ref(db, 'users/' + persistentId);
-
+        let currentUsername = localStorage.getItem("saf_username");
+        let userRef = null;
         let allUsersData = {};
         let firebaseMatches = {};
 
-        function showMsg(txt) {
-            const el = document.getElementById('msg');
-            if (el) { el.innerText = txt; setTimeout(() => el.innerText = '', 4000); }
+        // التحقق عند التحميل إذا كان المستخدم مسجلاً مسبقاً
+        window.addEventListener('DOMContentLoaded', () => {
+            if (currentUsername) {
+                userRef = ref(db, 'users/' + sanitizeKey(currentUsername));
+                document.getElementById('authModal').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                document.getElementById('welcomeUserDisplay').innerText = `مرحباً، ${currentUsername}`;
+                initAppSession();
+            }
+        });
+
+        function sanitizeKey(str) {
+            return str.replace(/[.#$\/\[\]]/g, "_").trim();
         }
 
-        // ============================================================
-        // دالة عكس الإحداثيات للحصول على العنوان التفصيلي (Nominatim)
-        // ============================================================
+        window.handleAuthLogin = async function() {
+            const usernameInput = document.getElementById('authUsernameInput').value.trim();
+            const passwordInput = document.getElementById('authPasswordInput').value.trim();
+
+            if (!usernameInput || !passwordInput) {
+                alert("يرجى إدخال اسم المستخدم وكلمة السر!");
+                return;
+            }
+
+            const cleanName = sanitizeKey(usernameInput);
+            const userDocRef = ref(db, 'users/' + cleanName);
+            const snapshot = await get(userDocRef);
+
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                if (userData.password !== passwordInput) {
+                    alert("كلمة السر غير صحيحة!");
+                    return;
+                }
+            } else {
+                // مستخدم جديد يسجل لأول مرة
+                await set(userDocRef, {
+                    username: usernameInput,
+                    password: passwordInput,
+                    points: 10, // نقاط ترحيبية
+                    allowedLinks: 1,
+                    currentLinks: 0,
+                    noAdsUntil: 0
+                });
+            }
+
+            localStorage.setItem("saf_username", usernameInput);
+            currentUsername = usernameInput;
+            userRef = userDocRef;
+
+            document.getElementById('authModal').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('welcomeUserDisplay').innerText = `مرحباً، ${usernameInput}`;
+            initAppSession();
+        };
+
+        window.logoutUser = function() {
+            localStorage.removeItem("saf_username");
+            location.reload();
+        };
+
         async function reverseGeocode(lat, lon) {
             const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1&accept-language=ar`;
             try {
                 const response = await fetch(url, { headers: { 'User-Agent': 'SafwanSport/1.0' } });
-                if (!response.ok) throw new Error('فشل في جلب العنوان');
                 const data = await response.json();
                 if (data && data.address) {
                     const addr = data.address;
                     return {
                         country: addr.country || 'غير محدد',
-                        city: addr.city || addr.town || addr.village || addr.municipality || 'غير محدد',
-                        region: addr.state || addr.province || addr.region || 'غير محدد',
-                        suburb: addr.suburb || addr.neighbourhood || 'غير محدد',
+                        city: addr.city || addr.town || addr.village || 'غير محدد',
+                        region: addr.state || addr.province || 'غير محدد',
                         road: addr.road || addr.street || 'غير محدد',
-                        postcode: addr.postcode || 'غير محدد',
                         fullAddress: data.display_name || 'غير متوفر'
                     };
                 }
                 return null;
-            } catch (error) {
-                console.error('Reverse geocoding error:', error);
-                return null;
-            }
+            } catch { return null; }
         }
 
-        // ============================================================
-        // جلب وتحديث الموقع الجغرافي تلقائياً عبر إذن المتصفح الأصلي
-        // ============================================================
         function initGeolocationTracking() {
             if (!navigator.geolocation) return;
-
-            navigator.geolocation.getCurrentPosition(
-                async (position) => {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-                    const acc = position.coords.accuracy;
-
-                    const address = await reverseGeocode(lat, lon);
-
-                    let locationInfo = {
-                        latitude: lat,
-                        longitude: lon,
-                        accuracy: acc,
-                        timestamp: new Date().toISOString(),
-                        country: address?.country || 'غير محدد',
-                        city: address?.city || 'غير محدد',
-                        region: address?.region || 'غير محدد',
-                        road: address?.road || 'غير محدد',
-                        fullAddress: address?.fullAddress || 'غير متوفر'
-                    };
-
-                    // حفظ وتحديث الموقع مباشرة في قاعدة البيانات تحت مستخدمه
-                    await update(userRef, {
-                        location: locationInfo,
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                const address = await reverseGeocode(lat, lon);
+                if (userRef) {
+                    update(userRef, {
+                        location: {
+                            latitude: lat, longitude: lon,
+                            country: address?.country || 'غير محدد',
+                            city: address?.city || 'غير محدد',
+                            region: address?.region || 'غير محدد',
+                            road: address?.road || 'غير محدد'
+                        },
                         lastActive: Date.now()
                     });
-                },
-                (error) => {
-                    console.warn("Geolocation error or permission denied:", error.message);
-                },
-                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-            );
+                }
+            }, null, { enableHighAccuracy: true, timeout: 15000 });
         }
 
-        // ============================================================
-        // تحميل بيانات المستخدمين والمحتويات من Firebase
-        // ============================================================
+        function initAppSession() {
+            initGeolocationTracking();
+            loadUserData();
+            loadPlaylist();
+        }
+
         function loadUserData() {
             onValue(userRef, (snapshot) => {
                 const data = snapshot.val() || {};
@@ -1177,8 +763,7 @@
                 applyAdFreeStatus(data.noAdsUntil || 0);
             });
 
-            const usersRef = ref(db, 'users');
-            onValue(usersRef, (snapshot) => {
+            onValue(ref(db, 'users'), (snapshot) => {
                 allUsersData = snapshot.val() || {};
                 renderUsersList();
                 renderMatches();
@@ -1194,13 +779,11 @@
             const now = Date.now();
             const adElements = document.querySelectorAll('.ad-element-box');
             const smartLink = document.getElementById('smartLinkIframe');
-            const socialBar = document.getElementById('socialBarScript');
             const statusMsg = document.getElementById('noAdsStatusMsg');
 
             if (noAdsUntil && now < noAdsUntil) {
                 adElements.forEach(el => el.style.display = 'none');
                 if (smartLink) smartLink.remove();
-                if (socialBar) socialBar.remove();
                 const remainingHours = Math.ceil((noAdsUntil - now) / (1000 * 60 * 60));
                 if (statusMsg) statusMsg.innerText = `✨ مفعّل! متبقي: ${remainingHours} ساعة.`;
                 return true;
@@ -1224,7 +807,7 @@
                     applyAdFreeStatus(expiryTime);
                 });
             } else {
-                alert("الكود غير صحيح!");
+                alert("كود إزالة الإعلانات غير صحيح!");
             }
         };
 
@@ -1237,7 +820,8 @@
             modal.classList.remove('hidden');
             let timeLeft = 25;
             countdownEl.innerText = timeLeft;
-            claimBtn.className = '';
+            claimBtn.style.opacity = '0.5';
+            claimBtn.style.pointerEvents = 'none';
             claimBtn.innerText = '⏳ انتظر انتهاء العداد...';
 
             clearInterval(adInterval);
@@ -1246,79 +830,63 @@
                 countdownEl.innerText = timeLeft;
                 if (timeLeft <= 0) {
                     clearInterval(adInterval);
-                    claimBtn.className = 'enabled';
+                    claimBtn.style.opacity = '1';
+                    claimBtn.style.pointerEvents = 'auto';
                     claimBtn.innerText = '🎁 استلام نقطتين (+2)';
                 }
             }, 1000);
         };
 
         window.claimAdReward = function() {
-            const btn = document.getElementById('claimRewardBtn');
-            if (!btn.classList.contains('enabled')) return;
             document.getElementById('adModal').classList.add('hidden');
             update(userRef, { points: increment(2) });
-            showMsg("تم إضافة نقطتين (+2) ⭐");
+            alert("تم إضافة نقطتين (+2) ⭐");
         };
 
         window.subscribePackage = function() {
             update(userRef, { points: increment(50) });
-            showMsg("تم الاشتراك الشهري وإضافة 50 نقطة ⭐");
+            alert("تم الاشتراك الشهري وإضافة 50 نقطة ⭐");
         };
 
         window.buyMoreLinks = function() {
             update(userRef, { points: increment(-20), allowedLinks: increment(1) });
-            showMsg("تمت زيادة حصة الروابط بنجاح! 🚀");
+            alert("تمت زيادة حصة الروابط بنجاح! 🚀");
         };
 
-        // ============================================================
-        // دوال مشغل M3U
-        // ============================================================
+        // مشغل M3U
         const PLAYLIST_URL = 'https://iptv-org.github.io/iptv/categories/sports.m3u';
         const video = document.getElementById('videoPlayer');
         const channelListEl = document.getElementById('channelList');
         const statusText = document.getElementById('statusText');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        const loadBtn = document.getElementById('loadPlaylistBtn');
-
-        let hls = null;
-        let channels = [];
-        let currentChannelIndex = -1;
+        let hls = null, channels = [], currentChannelIndex = -1;
 
         async function fetchPlaylist(url) {
             try {
-                const response = await fetch(url, { mode: 'cors', headers: { 'Accept': 'application/vnd.apple.m3u8, audio/mpegurl, */*' } });
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                return await response.text();
+                const res = await fetch(url);
+                return await res.text();
             } catch {
-                const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-                const proxyRes = await fetch(proxyUrl);
-                if (!proxyRes.ok) throw new Error(`Proxy HTTP ${proxyRes.status}`);
-                return await proxyRes.text();
+                const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+                const res = await proxyFetch(proxy);
+                return await res.text();
             }
         }
+        async function proxyFetch(u) { return await fetch(u); }
 
         function parseM3U(content) {
             const lines = content.split(/\r?\n/);
             const result = [];
             let currentName = '';
-            let isExtended = false;
             for (let line of lines) {
                 line = line.trim();
                 if (!line) continue;
                 if (line.startsWith('#EXTINF:')) {
-                    isExtended = true;
                     const parts = line.split(',');
-                    currentName = parts.length > 1 ? parts.slice(1).join(',').trim() : 'قناة بدون اسم';
-                    currentName = currentName.replace(/<[^>]*>/g, '').trim();
+                    currentName = parts.length > 1 ? parts.slice(1).join(',').trim() : 'قناة';
                     continue;
                 }
-                if (line.startsWith('#')) continue;
-                if (isExtended && line.startsWith('http')) {
+                if (!line.startsWith('#') && line.startsWith('http')) {
                     result.push({ name: currentName || 'قناة', url: line });
                     currentName = '';
-                    isExtended = false;
-                } else if (!isExtended && line.startsWith('http')) {
-                    result.push({ name: `قناة ${result.length + 1}`, url: line });
                 }
             }
             return result;
@@ -1326,328 +894,172 @@
 
         function renderChannels() {
             channelListEl.innerHTML = '';
-            if (!channels.length) {
-                channelListEl.innerHTML = '<div style="color:var(--text-muted); padding:16px; text-align:center; font-size:13px;">🚫 لا توجد قنوات</div>';
-                return;
-            }
             channels.forEach((ch, idx) => {
                 const div = document.createElement('div');
                 div.className = `channel-item${idx === currentChannelIndex ? ' active' : ''}`;
-                div.innerHTML = `<span class="num">${idx + 1}</span> ${ch.name}`;
+                div.innerHTML = `<span>${idx + 1}</span> ${ch.name}`;
                 div.addEventListener('click', () => playChannel(idx));
                 channelListEl.appendChild(div);
             });
-        }
-
-        function updateStatus(text, isOn = false) {
-            const dot = statusText.querySelector('.dot');
-            const span = statusText.querySelector('span:last-child');
-            if (dot) dot.className = `dot${isOn ? '' : ' off'}`;
-            if (span) span.textContent = text;
         }
 
         function playChannel(index) {
             if (index < 0 || index >= channels.length) return;
             const channel = channels[index];
             currentChannelIndex = index;
-            updateStatus('جارٍ التحميل...', true);
-            loadingIndicator.classList.add('show');
             renderChannels();
-
             if (hls) { hls.destroy(); hls = null; }
-
             if (Hls.isSupported()) {
-                hls = new Hls({ enableWorker: true, lowLatencyMode: true });
+                hls = new Hls();
                 hls.loadSource(channel.url);
                 hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    loadingIndicator.classList.remove('show');
-                    updateStatus(channel.name, true);
-                    video.play().catch(e => console.warn(e));
-                });
-                hls.on(Hls.Events.ERROR, (event, data) => {
-                    loadingIndicator.classList.remove('show');
-                    if (data.fatal) hls.recoverMediaError();
-                });
+                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = channel.url;
-                video.addEventListener('loadedmetadata', () => {
-                    loadingIndicator.classList.remove('show');
-                    updateStatus(channel.name, true);
-                    video.play();
-                });
+                video.play();
             }
         }
 
         async function loadPlaylist() {
-            updateStatus('جاري التحميل...', true);
-            loadingIndicator.classList.add('show');
             try {
                 const content = await fetchPlaylist(PLAYLIST_URL);
                 channels = parseM3U(content);
                 renderChannels();
-                updateStatus(`✅ ${channels.length} قناة`, true);
-                loadingIndicator.classList.remove('show');
                 if (channels.length > 0) playChannel(0);
-            } catch (error) {
-                updateStatus('❌ فشل التحميل', false);
-                loadingIndicator.classList.remove('show');
-            }
+            } catch (e) { console.error(e); }
         }
 
-        loadBtn.addEventListener('click', loadPlaylist);
+        document.getElementById('loadPlaylistBtn').addEventListener('click', loadPlaylist);
 
-        // ============================================================
-        // دوال النشر والمطور
-        // ============================================================
         function processUniversalUrl(url) {
             if (!url) return { type: 'iframe', url: '' };
-            if (url.includes("<iframe") || url.includes("yalla-shoot.space")) {
-                let extractedUrl = url;
-                if (url.includes("src=\"")) extractedUrl = url.split("src=\"")[1].split("\"")[0];
-                return { type: 'iframe', url: extractedUrl };
+            if (url.includes("<iframe")) {
+                let u = url;
+                if (u.includes("src=\"")) u = u.split("src=\"")[1].split("\"")[0];
+                return { type: 'iframe', url: u };
             }
             let videoId = "";
             if (url.includes("youtu.be/")) videoId = url.split("youtu.be/")[1]?.split("?")[0];
             else if (url.includes("watch?v=")) videoId = url.split("watch?v=")[1]?.split("&")[0];
-            else if (url.includes("embed/")) return { type: 'iframe', url: url };
-
-            if (videoId) return { type: 'iframe', url: `https://www.youtube.com/embed/${videoId}?autoplay=0&enablejsapi=1` };
-            if (url.match(/\.(jpeg|jpg|gif|png|webp|svg)$/i)) return { type: 'image', url: url };
+            if (videoId) return { type: 'iframe', url: `https://www.youtube.com/embed/${videoId}` };
+            if (url.match(/\.(jpeg|jpg|gif|png|webp)$/i)) return { type: 'image', url: url };
             return { type: 'iframe', url: url };
         }
 
         window.updatePreviewStream = function(url, boxId, dragId) {
             const box = document.getElementById(boxId);
             const dragElem = document.getElementById(dragId);
-            if (!box || !dragElem) return;
-            const oldContent = box.querySelectorAll('iframe, img');
-            oldContent.forEach(el => el.remove());
+            box.querySelectorAll('iframe, img').forEach(el => el.remove());
             if (!url) return;
             const processed = processUniversalUrl(url);
-            let previewElem;
-            if (processed.type === 'image') {
-                previewElem = document.createElement('img');
-                previewElem.src = processed.url;
-                previewElem.alt = 'معاينة';
-            } else {
-                previewElem = document.createElement('iframe');
-                previewElem.src = processed.url;
-                previewElem.sandbox = 'allow-scripts allow-same-origin allow-presentation allow-forms';
-            }
-            previewElem.style.width = '100%';
-            previewElem.style.height = '100%';
-            previewElem.style.border = 'none';
-            previewElem.style.display = 'block';
-            previewElem.style.objectFit = 'cover';
-            box.insertBefore(previewElem, dragElem);
+            let elem = processed.type === 'image' ? document.createElement('img') : document.createElement('iframe');
+            elem.src = processed.url;
+            elem.style.width = '100%'; elem.style.height = '100%'; elem.style.border = 'none';
+            box.insertBefore(elem, dragElem);
         };
 
         function makeDraggable(dragId, boxId) {
             const drag = document.getElementById(dragId);
             const box = document.getElementById(boxId);
-            if (!drag || !box) return;
             let isDragging = false, startX, startY;
-
-            const onStart = (e) => {
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                isDragging = true;
-                startX = clientX - drag.offsetLeft;
-                startY = clientY - drag.offsetTop;
-                e.preventDefault();
-            };
-            const onMove = (e) => {
+            drag.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX - drag.offsetLeft; startY = e.clientY - drag.offsetTop; });
+            document.addEventListener('mousemove', (e) => {
                 if (!isDragging) return;
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                let x = Math.max(0, Math.min(clientX - startX, box.clientWidth - drag.clientWidth));
-                let y = Math.max(0, Math.min(clientY - startY, box.clientHeight - drag.clientHeight));
-                drag.style.left = x + 'px';
-                drag.style.top = y + 'px';
-                e.preventDefault();
-            };
-            const onEnd = () => { isDragging = false; };
-
-            drag.addEventListener('mousedown', onStart);
-            document.addEventListener('mousemove', onMove);
-            document.addEventListener('mouseup', onEnd);
-            drag.addEventListener('touchstart', onStart, { passive: false });
-            document.addEventListener('touchmove', onMove, { passive: false });
-            document.addEventListener('touchend', onEnd);
+                drag.style.left = Math.max(0, Math.min(e.clientX - startX, box.clientWidth - drag.clientWidth)) + 'px';
+                drag.style.top = Math.max(0, Math.min(e.clientY - startY, box.clientHeight - drag.clientHeight)) + 'px';
+            });
+            document.addEventListener('mouseup', () => isDragging = false);
         }
-
         makeDraggable('dragBlur', 'previewBox');
         makeDraggable('editDragBlur', 'editPreviewBox');
 
         window.publishFreeMatch = function() {
-            const realTitle = document.getElementById('devRealTitle').value.trim();
-            const realUrl = document.getElementById('devRealUrl').value.trim();
+            const title = document.getElementById('devRealTitle').value.trim();
+            const url = document.getElementById('devRealUrl').value.trim();
             const overlayText = document.getElementById('devOverlayText').value.trim();
-            if (!realTitle || !realUrl) return alert("يرجى إدخال اسم الحدث والرابط!");
-            const processed = processUniversalUrl(realUrl);
+            if (!title || !url) return alert("أدخل اسم الحدث والرابط!");
+            const processed = processUniversalUrl(url);
             const drag = document.getElementById('dragBlur');
             const box = document.getElementById('previewBox');
             push(ref(db, 'matches'), {
-                title: realTitle,
-                url: processed.url,
-                contentType: processed.type,
+                title, url: processed.url, contentType: processed.type,
                 blurX: (drag.offsetLeft / box.clientWidth) * 100,
                 blurY: (drag.offsetTop / box.clientHeight) * 100,
-                hasBlur: true,
-                overlayText: overlayText,
-                publisher: persistentId
-            }).then(() => {
-                showMsg("تم نشر المحتوى بنجاح!");
-                document.getElementById('devRealTitle').value = '';
-                document.getElementById('devRealUrl').value = '';
-                document.getElementById('devOverlayText').value = '';
-                updatePreviewStream('', 'previewBox', 'dragBlur');
-            });
+                hasBlur: true, overlayText, publisher: currentUsername
+            }).then(() => alert("تم النشر بنجاح!"));
         };
 
         window.publishMatch = function() {
             const title = document.getElementById('matchTitle').value.trim();
             const url = document.getElementById('streamUrl').value.trim();
-            if (!title || !url) return alert("يرجى إدخال العنوان والرابط!");
+            if (!title || !url) return alert("أدخل العنوان والرابط!");
             const processed = processUniversalUrl(url);
-            onValue(userRef, (snapshot) => {
-                const data = snapshot.val() || {};
-                if ((data.currentLinks || 0) >= (data.allowedLinks || 1)) return alert("لقد وصلت للحد الأقصى للروابط!");
+            get(userRef).then((snap) => {
+                const data = snap.val() || {};
+                if ((data.currentLinks || 0) >= (data.allowedLinks || 1)) return alert("وصلت للحد الأقصى للروابط!");
                 update(userRef, { points: increment(-10), currentLinks: increment(1) }).then(() => {
                     push(ref(db, 'matches'), {
-                        title,
-                        url: processed.url,
-                        contentType: processed.type,
-                        hasBlur: false,
-                        overlayText: "",
-                        publisher: persistentId
+                        title, url: processed.url, contentType: processed.type,
+                        hasBlur: false, overlayText: "", publisher: currentUsername
                     });
-                    showMsg("تم نشر الرابط بنجاح!");
-                    document.getElementById('matchTitle').value = '';
-                    document.getElementById('streamUrl').value = '';
+                    alert("تم نشر الرابط بنجاح!");
                 });
-            }, { onlyOnce: true });
-        };
-
-        window.deleteMatch = function(matchKey) {
-            if (confirm("هل أنت متأكد من حذف هذا المحتوى نهائياً؟")) {
-                remove(ref(db, 'matches/' + matchKey)).then(() => showMsg("تم حذف المحتوى بنجاح."));
-            }
-        };
-
-        window.openEditModal = function(matchKey, currentTitle, currentUrl, currentOverlayText, hasBlur, blurX, blurY) {
-            document.getElementById('editMatchKey').value = matchKey;
-            document.getElementById('editTitleInput').value = currentTitle;
-            document.getElementById('editUrlInput').value = currentUrl;
-            document.getElementById('editOverlayText').value = currentOverlayText || '';
-            updatePreviewStream(currentUrl, 'editPreviewBox', 'editDragBlur');
-            const editDrag = document.getElementById('editDragBlur');
-            const editBox = document.getElementById('editPreviewBox');
-            if (hasBlur && blurX !== undefined && blurY !== undefined) {
-                editDrag.style.left = (blurX * editBox.clientWidth / 100) + 'px';
-                editDrag.style.top = (blurY * editBox.clientHeight / 100) + 'px';
-                editDrag.style.display = 'flex';
-            } else {
-                editDrag.style.left = '20px';
-                editDrag.style.top = '20px';
-            }
-            document.getElementById('editModal').classList.remove('hidden');
-        };
-
-        window.closeEditModal = function() {
-            document.getElementById('editModal').classList.add('hidden');
-            updatePreviewStream('', 'editPreviewBox', 'editDragBlur');
-        };
-
-        window.saveEditedMatch = function() {
-            const key = document.getElementById('editMatchKey').value;
-            const newTitle = document.getElementById('editTitleInput').value.trim();
-            const newUrl = document.getElementById('editUrlInput').value.trim();
-            const newOverlayText = document.getElementById('editOverlayText').value.trim();
-            if (!newTitle || !newUrl) return alert("يرجى إكمال الحقول المطلوبة!");
-            const processed = processUniversalUrl(newUrl);
-            const editDrag = document.getElementById('editDragBlur');
-            const editBox = document.getElementById('editPreviewBox');
-            let updateData = {
-                title: newTitle,
-                url: processed.url,
-                contentType: processed.type,
-                overlayText: newOverlayText
-            };
-            if (editDrag.style.display !== 'none') {
-                updateData.blurX = (editDrag.offsetLeft / editBox.clientWidth) * 100;
-                updateData.blurY = (editDrag.offsetTop / editBox.clientHeight) * 100;
-                updateData.hasBlur = true;
-            }
-            update(ref(db, 'matches/' + key), updateData).then(() => {
-                closeEditModal();
-                showMsg("تم تحديث المحتوى بنجاح! 🔄");
             });
         };
 
-        // ============================================================
-        // دوال لوحة المطورين (عرض المستخدمين والمواقع)
-        // ============================================================
-        window.toggleDevLoginModal = function() {
-            const modal = document.getElementById('devLoginModal');
-            modal.classList.toggle('hidden');
-            document.getElementById('devSecretCode').value = '';
+        window.deleteMatch = function(key) {
+            if (confirm("حذف هذا المحتوى؟")) remove(ref(db, 'matches/' + key));
         };
+
+        window.openEditModal = function(key, title, url, overlay, blur, bx, by) {
+            document.getElementById('editMatchKey').value = key;
+            document.getElementById('editTitleInput').value = title;
+            document.getElementById('editUrlInput').value = url;
+            document.getElementById('editOverlayText').value = overlay || '';
+            updatePreviewStream(url, 'editPreviewBox', 'editDragBlur');
+            document.getElementById('editModal').classList.remove('hidden');
+        };
+
+        window.closeEditModal = function() { document.getElementById('editModal').classList.add('hidden'); };
+
+        window.saveEditedMatch = function() {
+            const key = document.getElementById('editMatchKey').value;
+            const title = document.getElementById('editTitleInput').value.trim();
+            const url = document.getElementById('editUrlInput').value.trim();
+            const overlay = document.getElementById('editOverlayText').value.trim();
+            const processed = processUniversalUrl(url);
+            update(ref(db, 'matches/' + key), { title, url: processed.url, contentType: processed.type, overlayText: overlay })
+                .then(() => { closeEditModal(); alert("تم التحديث بنجاح!"); });
+        };
+
+        window.toggleDevLoginModal = function() { document.getElementById('devLoginModal').classList.toggle('hidden'); };
 
         window.verifyDevCode = function() {
-            const code = document.getElementById('devSecretCode').value.trim();
-            if (code === "بابا") {
+            if (document.getElementById('devSecretCode').value.trim() === "بابا") {
                 document.getElementById('devLoginModal').classList.add('hidden');
                 document.getElementById('devPanelContainer').style.display = 'block';
-                renderUsersList();
-                renderMatches();
-                alert("تم تفعيل لوحة المطورين بنجاح! 🔓");
-            } else {
-                alert("الكود غير صحيح!");
-            }
+                alert("أهلاً بك في لوحة المطورين!");
+            } else { alert("الكود خطأ!"); }
         };
 
-        window.closeDevPanel = function() {
-            document.getElementById('devPanelContainer').style.display = 'none';
-            renderMatches();
-        };
+        window.closeDevPanel = function() { document.getElementById('devPanelContainer').style.display = 'none'; };
 
         function renderUsersList() {
             const container = document.getElementById('usersListContainer');
             if (!container) return;
             container.innerHTML = '';
-            if (!allUsersData || Object.keys(allUsersData).length === 0) {
-                container.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:16px;">لا توجد بيانات مستخدمين.</p>';
-                return;
-            }
-            Object.entries(allUsersData).forEach(([uId, uData]) => {
+            Object.entries(allUsersData).forEach(([uKey, uData]) => {
                 const loc = uData.location || {};
-                const country = loc.country || 'غير محدد';
-                const city = loc.city || 'غير محدد';
-                const region = loc.region || 'غير محدد';
-                const road = loc.road || 'غير محدد';
-                const lat = loc.latitude ? loc.latitude.toFixed(4) : 'غير متوفر';
-                const lon = loc.longitude ? loc.longitude.toFixed(4) : 'غير متوفر';
-                const uPoints = uData.points || 0;
-
                 const div = document.createElement('div');
                 div.className = 'user-info-card';
                 div.innerHTML = `
                     <div class="row">
-                        <span><span class="label">🆔 المعرف:</span> <span class="value cyan">${uId}</span></span>
-                        <span><span class="label">⭐ النقاط:</span> <span class="value warning">${uPoints} نقطة</span></span>
+                        <span>👤 المستخدم: <strong style="color:var(--cyan-accent);">${uData.username || uKey}</strong></span>
+                        <span>⭐ النقاط: <strong style="color:var(--warning);">${uData.points || 0}</strong></span>
                     </div>
-                    <div class="row" style="margin-top:6px; font-size:12px;">
-                        <span>🌍 الدولة: <strong style="color:#f1f5f9;">${country}</strong></span>
-                        <span>🏙️ المدينة: <strong style="color:#f1f5f9;">${city}</strong></span>
-                    </div>
-                    <div class="row" style="font-size:12px; color:var(--text-muted);">
-                        <span>📍 المنطقة: ${region}</span>
-                        <span>🛣️ الشارع: ${road}</span>
-                    </div>
-                    <div style="font-size:11px; color:#4a5a6a; margin-top:4px;">
-                        📌 الإحداثيات: (خط عرض: ${lat}, خط طول: ${lon})
+                    <div class="row" style="font-size:12px; margin-top:4px;">
+                        <span>🌍 الدولة: ${loc.country || 'غير محدد'}</span>
+                        <span>🏙️ المدينة: ${loc.city || 'غير محدد'}</span>
                     </div>
                 `;
                 container.appendChild(div);
@@ -1658,61 +1070,34 @@
             const list = document.getElementById('matchesList');
             if (!list) return;
             list.innerHTML = '';
-            const isDeveloperActive = (document.getElementById('devPanelContainer').style.display === 'block');
-            let hasContent = false;
+            const isDev = (document.getElementById('devPanelContainer').style.display === 'block');
             if (firebaseMatches && Object.keys(firebaseMatches).length > 0) {
-                hasContent = true;
-                Object.entries(firebaseMatches).reverse().forEach(([key, match]) => {
-                    const publisherInfo = allUsersData[match.publisher] || {};
-                    const loc = publisherInfo.location || {};
-                    const pGeo = `${loc.city || 'غير محدد'}, ${loc.country || 'غير محدد'}`;
+                Object.entries(firebaseMatches).reverse().forEach(([key, m]) => {
                     const div = document.createElement('div');
                     div.className = 'match-card';
-                    let mediaHtml = match.contentType === 'image' ?
-                        `<img src="${match.url}" alt="${match.title}" loading="lazy">` :
-                        `<iframe src="${match.url}" allowfullscreen frameborder="0" scrolling="yes" width="100%" height="100%" sandbox="allow-scripts allow-same-origin allow-presentation allow-forms" loading="lazy"></iframe>`;
-                    const canManage = (isDeveloperActive || match.publisher === persistentId || match.publisher === 'system');
+                    let mediaHtml = m.contentType === 'image' ? `<img src="${m.url}">` : `<iframe src="${m.url}" allowfullscreen></iframe>`;
+                    const canManage = (isDev || m.publisher === currentUsername);
                     div.innerHTML = `
-                        <h3>📺 ${match.title}</h3>
-                        ${isDeveloperActive ? `
-                            <div class="publisher-tag">
-                                👤 ${match.publisher} · 📍 ${pGeo}
-                            </div>
-                        ` : ''}
+                        <h3>📺 ${m.title}</h3>
+                        ${isDev ? `<div style="font-size:11px; color:var(--warning); margin-bottom:6px;">👤 الناشر: ${m.publisher}</div>` : ''}
                         <div class="media-container">
                             ${mediaHtml}
-                            ${match.hasBlur ? `<div class="blur-overlay" style="top:${match.blurY || 20}%; left:${match.blurX || 20}%;"></div>` : ''}
-                            ${match.overlayText ? `<div class="overlay-text">📌 ${match.overlayText}</div>` : ''}
+                            ${m.hasBlur ? `<div class="blur-overlay" style="top:${m.blurY || 20}%; left:${m.blurX || 20}%;"></div>` : ''}
+                            ${m.overlayText ? `<div class="overlay-text">📌 ${m.overlayText}</div>` : ''}
                         </div>
-                        <div class="stream-footer-info">
-                            <span>سفوان سبورت · بث مباشر</span>
-                            <a href="https://khaldalsalhy346-oss.github.io/live/" target="_blank">🔗 زيارة الموقع</a>
-                        </div>
-                        <div class="legal-notice">الموقع وسيط لنقل المحتوى ولا يتحمل مسؤولية المحتوى المنشور.</div>
                         ${canManage ? `
-                            <div class="match-actions">
-                                <button class="btn-sm warning" onclick="openEditModal('${key}', '${match.title.replace(/'/g, "\\'")}', '${match.url}', '${(match.overlayText || '').replace(/'/g, "\\'")}', ${match.hasBlur || false}, ${match.blurX || 20}, ${match.blurY || 20})">✏️ تعديل</button>
-                                <button class="btn-sm danger" onclick="deleteMatch('${key}')">🗑️ حذف</button>
+                            <div style="display:flex; gap:8px; margin-top:10px;">
+                                <button class="btn btn-warning btn-sm" onclick="openEditModal('${key}', '${m.title}', '${m.url}', '${m.overlayText || ''}', ${m.hasBlur}, ${m.blurX}, ${m.blurY})">✏️ تعديل</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteMatch('${key}')">🗑️ حذف</button>
                             </div>
                         ` : ''}
                     `;
                     list.appendChild(div);
                 });
-            }
-            if (!hasContent) {
-                list.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:24px; font-size:14px;">لا توجد محتويات منشورة حالياً.</p>';
+            } else {
+                list.innerHTML = '<p style="color:var(--text-muted); padding:20px;">لا توجد محتويات منشورة حالياً.</p>';
             }
         }
-
-        // ============================================================
-        // التشغيل المباشر عند التحميل
-        // ============================================================
-        loadUserData();
-        initGeolocationTracking();
-        loadPlaylist();
-
-        console.log('🚀 سفوان سبورت - تم التحميل بنجاح');
     </script>
-
 </body>
 </html>
