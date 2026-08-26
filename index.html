@@ -375,14 +375,18 @@
             width: 100%; height: 100%; border: none; display: block; object-fit: cover;
         }
 
+        /* تنسيق دقيق للإفيكس (Blur) ليكون ثابت النسبة فوق الشاشة مباشرة */
         .media-container .blur-overlay {
             position: absolute;
-            width: 120px; height: 45px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 20%;
+            height: 15%;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 6px;
             pointer-events: none;
+            z-index: 5;
         }
 
         .media-container .overlay-text {
@@ -395,6 +399,7 @@
             font-size: 13px;
             font-weight: 600;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 5;
         }
 
         .form-group { margin-bottom: 14px; }
@@ -515,6 +520,11 @@
                 <label>📝 النص المضاف على الشاشة</label>
                 <input type="text" id="editOverlayText">
             </div>
+            <div class="form-group" style="text-align:right;">
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                    <input type="checkbox" id="editHasBlur" style="width:auto;"> تفعيل إفيكس التغبيش (Blur)
+                </label>
+            </div>
             <div class="preview-box" id="editPreviewBox">
                 <div id="editDragBlur" class="draggable-blur" draggable="true">اسحب لتغيير الموقع</div>
             </div>
@@ -535,12 +545,12 @@
         </div>
     </div>
 
-    <!-- نافذة كود المطور -->
+    <!-- نافذة كود المطور (تم إخفاء الكود وجعله نوع Password) -->
     <div id="devLoginModal" class="modal-overlay hidden">
         <div class="modal-box">
             <h3>🛡️ تحقق كود المطور</h3>
             <div class="form-group" style="text-align:right;">
-                <input type="password" id="devSecretCode" placeholder="أدخل الكود (بابا)...">
+                <input type="password" id="devSecretCode" placeholder="أدخل كود المطور السري...">
             </div>
             <div style="display:flex; gap:10px;">
                 <button class="btn btn-primary" onclick="verifyDevCode()">دخول</button>
@@ -563,13 +573,13 @@
             </div>
         </header>
 
-        <!-- [تم التعديل]: رفع قسم البثوث والمحتويات المشتركة ليظهر بالأعلى فوق مشغل الـ IPTV مباشرة -->
+        <!-- قسم البثوث والمحتويات المشتركة بالأعلى -->
         <div class="card">
             <h2><span>📺</span> البثوث والمحتويات المشتركة</h2>
             <div id="matchesList" style="color:var(--text-muted); text-align:center; padding:20px;">جاري التحميل...</div>
         </div>
 
-        <!-- مشغل القنوات (أصبح تحت البثوث المشتركة) -->
+        <!-- مشغل القنوات IPTV -->
         <div class="card">
             <h2><span>📡</span> مشغل القنوات الرياضية IPTV</h2>
             <div class="player-wrapper">
@@ -660,6 +670,11 @@
                 <div id="dragBlur" class="draggable-blur" draggable="true">اسحبني للأفيكس</div>
             </div>
             <div class="form-group"><label>📝 نص مضاف على الشاشة</label><input type="text" id="devOverlayText"></div>
+            <div class="form-group">
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                    <input type="checkbox" id="devHasBlur" checked style="width:auto;"> تفعيل إفيكس التغبيش (Blur)
+                </label>
+            </div>
             <div class="form-group"><label>🏷️ اسم الحدث</label><input type="text" id="devRealTitle"></div>
             <div class="form-group"><label>🔗 رابط البث</label><input type="text" id="devRealUrl" oninput="updatePreviewStream(this.value, 'previewBox', 'dragBlur')"></div>
             <button class="btn btn-accent" onclick="publishFreeMatch()">⚡ نشر مجاني</button>
@@ -1025,7 +1040,7 @@
             box.insertBefore(elem, dragElem);
         };
 
-        // [تم التعديل]: إصلاح حركة السحب والإفلات (الأفيكس) لتكون سلسة وصحيحة 100% للماوس وللمس
+        // دالة السحب والإفطار للإفيكس بدقة وثبات تام
         function makeDraggable(dragId, boxId) {
             const drag = document.getElementById(dragId);
             const box = document.getElementById(boxId);
@@ -1076,6 +1091,7 @@
             const title = document.getElementById('devRealTitle').value.trim();
             const url = document.getElementById('devRealUrl').value.trim();
             const overlayText = document.getElementById('devOverlayText').value.trim();
+            const hasBlur = document.getElementById('devHasBlur').checked;
             if (!title || !url) return alert("أدخل اسم الحدث والرابط!");
             const processed = processUniversalUrl(url);
             const drag = document.getElementById('dragBlur');
@@ -1086,8 +1102,8 @@
 
             push(ref(db, 'matches'), {
                 title, url: processed.url, contentType: processed.type,
-                blurX, blurY, hasBlur: true, overlayText, publisher: currentUsername,
-                timestamp: Date.now() // [مهم جداً]: حفظ وقت النشر لترتيب البثوث الجديدة بالأعلى
+                blurX, blurY, hasBlur, overlayText, publisher: currentUsername,
+                timestamp: Date.now()
             }).then(() => alert("تم النشر بنجاح!"));
         };
 
@@ -1103,7 +1119,7 @@
                     push(ref(db, 'matches'), {
                         title, url: processed.url, contentType: processed.type,
                         hasBlur: false, overlayText: "", publisher: currentUsername,
-                        timestamp: Date.now() // [مهم جداً]: حفظ وقت النشر لترتيب البثوث الجديدة بالأعلى
+                        timestamp: Date.now()
                     });
                     alert("تم نشر الرابط بنجاح!");
                 });
@@ -1119,7 +1135,19 @@
             document.getElementById('editTitleInput').value = title;
             document.getElementById('editUrlInput').value = url;
             document.getElementById('editOverlayText').value = overlay || '';
+            document.getElementById('editHasBlur').checked = !!blur;
             updatePreviewStream(url, 'editPreviewBox', 'editDragBlur');
+            
+            // ضبط موقع المربع المسحوب في معاينة التعديل بناءً على الاحداثيات المحفوظة
+            setTimeout(() => {
+                const box = document.getElementById('editPreviewBox');
+                const drag = document.getElementById('editDragBlur');
+                if (box && drag) {
+                    drag.style.left = ((bx || 20) / 100) * box.clientWidth + 'px';
+                    drag.style.top = ((by || 20) / 100) * box.clientHeight + 'px';
+                }
+            }, 50);
+
             document.getElementById('editModal').classList.remove('hidden');
         };
 
@@ -1130,12 +1158,29 @@
             const title = document.getElementById('editTitleInput').value.trim();
             const url = document.getElementById('editUrlInput').value.trim();
             const overlay = document.getElementById('editOverlayText').value.trim();
+            const hasBlur = document.getElementById('editHasBlur').checked;
+            
+            const drag = document.getElementById('editDragBlur');
+            const box = document.getElementById('editPreviewBox');
+            const blurX = box.clientWidth > 0 ? (drag.offsetLeft / box.clientWidth) * 100 : 20;
+            const blurY = box.clientHeight > 0 ? (drag.offsetTop / box.clientHeight) * 100 : 20;
+
             const processed = processUniversalUrl(url);
-            update(ref(db, 'matches/' + key), { title, url: processed.url, contentType: processed.type, overlayText: overlay })
-                .then(() => { closeEditModal(); alert("تم التحديث بنجاح!"); });
+            update(ref(db, 'matches/' + key), { 
+                title, 
+                url: processed.url, 
+                contentType: processed.type, 
+                overlayText: overlay,
+                hasBlur,
+                blurX,
+                blurY
+            }).then(() => { closeEditModal(); alert("تم التحديث بنجاح!"); });
         };
 
-        window.toggleDevLoginModal = function() { document.getElementById('devLoginModal').classList.toggle('hidden'); };
+        window.toggleDevLoginModal = function() { 
+            document.getElementById('devSecretCode').value = '';
+            document.getElementById('devLoginModal').classList.toggle('hidden'); 
+        };
 
         window.verifyDevCode = function() {
             if (document.getElementById('devSecretCode').value.trim() === "بابا") {
@@ -1169,14 +1214,12 @@
             });
         }
 
-        // [تم التعديل]: دالة عرض وترتيب البثوث لتجعل الجديد يظهر بالأعلى دائماً فوق الـ IPTV
         function renderMatches() {
             const list = document.getElementById('matchesList');
             if (!list) return;
             list.innerHTML = '';
             const isDev = (document.getElementById('devPanelContainer').style.display === 'block');
             if (firebaseMatches && Object.keys(firebaseMatches).length > 0) {
-                // ترتيب البثوث تنازلياً حسب الـ timestamp (الأحدث يظهر في الأعلى)
                 const matchesArray = Object.entries(firebaseMatches).sort((a, b) => {
                     return (b[1].timestamp || 0) - (a[1].timestamp || 0);
                 });
@@ -1196,7 +1239,7 @@
                         </div>
                         ${canManage ? `
                             <div style="display:flex; gap:8px; margin-top:10px;">
-                                <button class="btn btn-warning btn-sm" onclick="openEditModal('${key}', '${m.title}', '${m.url}', '${m.overlayText || ''}', ${m.hasBlur}, ${m.blurX}, ${m.blurY})">✏️ تعديل</button>
+                                <button class="btn btn-warning btn-sm" onclick="openEditModal('${key}', '${m.title}', '${m.url}', '${m.overlayText || ''}', ${m.hasBlur}, ${m.blurX || 20}, ${m.blurY || 20})">✏️ تعديل وإفيكس</button>
                                 <button class="btn btn-danger btn-sm" onclick="deleteMatch('${key}')">🗑️ حذف</button>
                             </div>
                         ` : ''}
