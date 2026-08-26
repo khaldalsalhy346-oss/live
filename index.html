@@ -375,7 +375,6 @@
             width: 100%; height: 100%; border: none; display: block; object-fit: cover;
         }
 
-        /* تنسيق دقيق للإفيكس (Blur) ليكون ثابت النسبة فوق الشاشة مباشرة */
         .media-container .blur-overlay {
             position: absolute;
             width: 20%;
@@ -389,9 +388,8 @@
             z-index: 5;
         }
 
-        .media-container .overlay-text {
+        .media-container .draggable-text-overlay {
             position: absolute;
-            bottom: 16px; right: 16px;
             background: rgba(0, 0, 0, 0.8);
             color: #fff;
             padding: 6px 16px;
@@ -399,7 +397,9 @@
             font-size: 13px;
             font-weight: 600;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 5;
+            z-index: 6;
+            cursor: default;
+            white-space: nowrap;
         }
 
         .form-group { margin-bottom: 14px; }
@@ -441,7 +441,8 @@
         .modal-box {
             background: var(--card-bg); border: 1px solid var(--border);
             padding: 28px 24px; border-radius: var(--radius); text-align: center;
-            max-width: 440px; width: 100%; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+            max-width: 480px; width: 100%; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+            max-height: 90vh; overflow-y: auto;
         }
         .modal-box h3 { color: var(--text-main); margin-bottom: 8px; font-size: 20px; }
         .modal-box p { color: var(--text-muted); font-size: 13px; margin-bottom: 18px; }
@@ -465,6 +466,14 @@
             top: 20px; left: 20px; display: flex; align-items: center; justify-content: center;
             font-size: 10px; color: #fff; z-index: 10; touch-action: none; font-weight: 600;
         }
+
+        .draggable-text-box {
+            position: absolute; background: rgba(0, 212, 255, 0.85); backdrop-filter: blur(6px);
+            border: 2px dashed #fff; border-radius: 6px; cursor: grab;
+            padding: 4px 12px; font-size: 12px; color: #050811; font-weight: 700;
+            z-index: 11; touch-action: none;
+        }
+
         .preview-box {
             position: relative; width: 100%; aspect-ratio: 16 / 9;
             background: #000; border-radius: var(--radius-sm); overflow: hidden;
@@ -473,6 +482,10 @@
         .preview-box iframe, .preview-box img { width: 100%; height: 100%; border: none; display: block; object-fit: cover; }
         .hidden { display: none !important; }
         .border-top { border-top: 1px solid var(--border); padding-top: 16px; margin-top: 16px; }
+
+        .text-item-row {
+            display: flex; gap: 8px; margin-bottom: 8px; align-items: center;
+        }
     </style>
 </head>
 <body>
@@ -505,8 +518,8 @@
 
     <!-- نافذة تعديل المحتوى -->
     <div id="editModal" class="modal-overlay hidden">
-        <div class="modal-box" style="max-width: 500px;">
-            <h3>✏️ تعديل المحتوى والأفيكس</h3>
+        <div class="modal-box" style="max-width: 520px;">
+            <h3>✏️ تعديل المحتوى والنصوص والأفيكس</h3>
             <input type="hidden" id="editMatchKey">
             <div class="form-group" style="text-align:right;">
                 <label>🏷️ العنوان الجديد</label>
@@ -514,19 +527,24 @@
             </div>
             <div class="form-group" style="text-align:right;">
                 <label>🔗 الرابط الجديد</label>
-                <input type="text" id="editUrlInput" oninput="updatePreviewStream(this.value, 'editPreviewBox', 'editDragBlur')">
+                <input type="text" id="editUrlInput" oninput="updatePreviewStream(this.value, 'editPreviewBox', 'editDragBlur', 'editCustomTextsContainer')">
             </div>
+            
             <div class="form-group" style="text-align:right;">
-                <label>📝 النص المضاف على الشاشة</label>
-                <input type="text" id="editOverlayText">
+                <label style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>📝 النصوص المضافة (اسحب النص لتغيير مكانه على الشاشة)</span>
+                    <button class="btn btn-accent btn-sm" type="button" onclick="addEditTextRow('', 20, 20)">+ إضافة نص</button>
+                </label>
+                <div id="editCustomTextsContainer" style="margin-top:8px; max-height:150px; overflow-y:auto; padding:4px;"></div>
             </div>
+
             <div class="form-group" style="text-align:right;">
                 <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
                     <input type="checkbox" id="editHasBlur" style="width:auto;"> تفعيل إفيكس التغبيش (Blur)
                 </label>
             </div>
             <div class="preview-box" id="editPreviewBox">
-                <div id="editDragBlur" class="draggable-blur" draggable="true">اسحب لتغيير الموقع</div>
+                <div id="editDragBlur" class="draggable-blur" draggable="true">اسحب التغبيش</div>
             </div>
             <div style="display:flex; gap:10px; margin-top:16px;">
                 <button class="btn btn-primary" onclick="saveEditedMatch()">💾 حفظ التعديلات</button>
@@ -545,7 +563,7 @@
         </div>
     </div>
 
-    <!-- نافذة كود المطور (تم إخفاء الكود وجعله نوع Password) -->
+    <!-- نافذة كود المطور -->
     <div id="devLoginModal" class="modal-overlay hidden">
         <div class="modal-box">
             <h3>🛡️ تحقق كود المطور</h3>
@@ -667,16 +685,24 @@
         <div class="card" style="border-color:var(--accent);">
             <h2 style="border:none; color:var(--accent);">🔓 نشر مباشر من المطور</h2>
             <div class="preview-box" id="previewBox">
-                <div id="dragBlur" class="draggable-blur" draggable="true">اسحبني للأفيكس</div>
+                <div id="dragBlur" class="draggable-blur" draggable="true">اسحبني للتغبيش</div>
             </div>
-            <div class="form-group"><label>📝 نص مضاف على الشاشة</label><input type="text" id="devOverlayText"></div>
+            
+            <div class="form-group">
+                <label style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>📝 النصوص المضافة (يمكنك إضافة عدة نصوص وسحبها بحرية)</span>
+                    <button class="btn btn-accent btn-sm" type="button" onclick="addDevTextRow('', 20, 50)">+ إضافة نص</button>
+                </label>
+                <div id="devCustomTextsContainer" style="margin-top:8px; max-height:160px; overflow-y:auto; padding:4px;"></div>
+            </div>
+
             <div class="form-group">
                 <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
                     <input type="checkbox" id="devHasBlur" checked style="width:auto;"> تفعيل إفيكس التغبيش (Blur)
                 </label>
             </div>
             <div class="form-group"><label>🏷️ اسم الحدث</label><input type="text" id="devRealTitle"></div>
-            <div class="form-group"><label>🔗 رابط البث</label><input type="text" id="devRealUrl" oninput="updatePreviewStream(this.value, 'previewBox', 'dragBlur')"></div>
+            <div class="form-group"><label>🔗 رابط البث</label><input type="text" id="devRealUrl" oninput="updatePreviewStream(this.value, 'previewBox', 'dragBlur', 'devCustomTextsContainer')"></div>
             <button class="btn btn-accent" onclick="publishFreeMatch()">⚡ نشر مجاني</button>
         </div>
     </div>
@@ -716,6 +742,8 @@
             } else {
                 document.getElementById('authModal').classList.remove('hidden');
             }
+            // إضافة صف نص افتراضي أولي
+            addDevTextRow("سفوان سبورت", 10, 10);
         });
 
         function sanitizeKey(str) {
@@ -1028,30 +1056,30 @@
             return { type: 'iframe', url: url };
         }
 
-        window.updatePreviewStream = function(url, boxId, dragId) {
+        window.updatePreviewStream = function(url, boxId, dragId, containerId) {
             const box = document.getElementById(boxId);
             const dragElem = document.getElementById(dragId);
-            box.querySelectorAll('iframe, img').forEach(el => el.remove());
+            box.querySelectorAll('iframe, img, .draggable-text-box').forEach(el => el.remove());
             if (!url) return;
             const processed = processUniversalUrl(url);
             let elem = processed.type === 'image' ? document.createElement('img') : document.createElement('iframe');
             elem.src = processed.url;
             elem.style.width = '100%'; elem.style.height = '100%'; elem.style.border = 'none';
             box.insertBefore(elem, dragElem);
+
+            // إعادة بناء العناصر النصية التفاعلية داخل المعاينة بناءً على الإدخالات
+            rebuildPreviewTexts(containerId, boxId);
         };
 
-        // دالة السحب والإفطار للإفيكس بدقة وثبات تام
-        function makeDraggable(dragId, boxId) {
-            const drag = document.getElementById(dragId);
-            const box = document.getElementById(boxId);
-            if (!drag || !box) return;
+        // نظام السحب والإفلات العام (يدعم الماوس واللمس بدقة تامة)
+        function makeElementDraggable(elem, box) {
             let isDragging = false, startX, startY;
 
             const startDrag = (clientX, clientY) => {
                 isDragging = true;
-                startX = clientX - drag.offsetLeft;
-                startY = clientY - drag.offsetTop;
-                drag.style.cursor = 'grabbing';
+                startX = clientX - elem.offsetLeft;
+                startY = clientY - elem.offsetTop;
+                elem.style.cursor = 'grabbing';
             };
 
             const onDrag = (clientX, clientY) => {
@@ -1059,23 +1087,23 @@
                 let newX = clientX - startX;
                 let newY = clientY - startY;
 
-                newX = Math.max(0, Math.min(newX, box.clientWidth - drag.clientWidth));
-                newY = Math.max(0, Math.min(newY, box.clientHeight - drag.clientHeight));
+                newX = Math.max(0, Math.min(newX, box.clientWidth - elem.clientWidth));
+                newY = Math.max(0, Math.min(newY, box.clientHeight - elem.clientHeight));
 
-                drag.style.left = newX + 'px';
-                drag.style.top = newY + 'px';
+                elem.style.left = newX + 'px';
+                elem.style.top = newY + 'px';
             };
 
             const stopDrag = () => {
                 isDragging = false;
-                drag.style.cursor = 'grab';
+                elem.style.cursor = 'grab';
             };
 
-            drag.addEventListener('mousedown', (e) => { startDrag(e.clientX, e.clientY); e.preventDefault(); });
+            elem.addEventListener('mousedown', (e) => { startDrag(e.clientX, e.clientY); e.preventDefault(); });
             document.addEventListener('mousemove', (e) => onDrag(e.clientX, e.clientY));
             document.addEventListener('mouseup', stopDrag);
 
-            drag.addEventListener('touchstart', (e) => {
+            elem.addEventListener('touchstart', (e) => {
                 if (e.touches.length > 0) startDrag(e.touches[0].clientX, e.touches[0].clientY);
             });
             document.addEventListener('touchmove', (e) => {
@@ -1084,15 +1112,86 @@
             document.addEventListener('touchend', stopDrag);
         }
 
-        makeDraggable('dragBlur', 'previewBox');
-        makeDraggable('editDragBlur', 'editPreviewBox');
+        makeElementDraggable(document.getElementById('dragBlur'), document.getElementById('previewBox'));
+        makeElementDraggable(document.getElementById('editDragBlur'), document.getElementById('editPreviewBox'));
+
+        // إدارة صفوف النصوص المتعددة للنشر والتعديل
+        window.addDevTextRow = function(textVal = '', xPercent = 20, yPercent = 20) {
+            const container = document.getElementById('devCustomTextsContainer');
+            const rowId = 'text_row_' + Date.now() + Math.floor(Math.random() * 1000);
+            
+            const div = document.createElement('div');
+            div.className = 'text-item-row';
+            div.id = rowId;
+            div.innerHTML = `
+                <input type="text" class="text-input-val" value="${textVal}" placeholder="أدخل النص المضاف..." oninput="updatePreviewTexts('previewBox', 'dragBlur', 'devCustomTextsContainer')" style="flex:1;">
+                <button class="btn btn-danger btn-sm" type="button" onclick="document.getElementById('${rowId}').remove(); updatePreviewTexts('previewBox', 'dragBlur', 'devCustomTextsContainer');">🗑️</button>
+            `;
+            container.appendChild(div);
+
+            // إنشاء عنصر بصري قابل للسحب في صندوق المعاينة
+            const box = document.getElementById('previewBox');
+            const textElem = document.createElement('div');
+            textElem.className = 'draggable-text-box';
+            textElem.dataset.rowid = rowId;
+            textElem.innerText = textVal || 'نص جديد';
+            textElem.style.left = (xPercent / 100) * box.clientWidth + 'px';
+            textElem.style.top = (yPercent / 100) * box.clientHeight + 'px';
+            
+            // ربط حقل الإدخال بتحديث النص بصرياً مباشرة
+            const inputField = div.querySelector('.text-input-val');
+            inputField.addEventListener('input', () => {
+                textElem.innerText = inputField.value || 'نص فارغ';
+            });
+
+            makeElementDraggable(textElem, box);
+            box.appendChild(textElem);
+        };
+
+        window.addEditTextRow = function(textVal = '', xPercent = 20, yPercent = 20) {
+            const container = document.getElementById('editCustomTextsContainer');
+            const rowId = 'edit_row_' + Date.now() + Math.floor(Math.random() * 1000);
+            
+            const div = document.createElement('div');
+            div.className = 'text-item-row';
+            div.id = rowId;
+            div.innerHTML = `
+                <input type="text" class="text-input-val" value="${textVal}" placeholder="أدخل النص المضاف..." oninput="updatePreviewTexts('editPreviewBox', 'editDragBlur', 'editCustomTextsContainer')" style="flex:1;">
+                <button class="btn btn-danger btn-sm" type="button" onclick="document.getElementById('${rowId}').remove(); updatePreviewTexts('editPreviewBox', 'editDragBlur', 'editCustomTextsContainer');">🗑️</button>
+            `;
+            container.appendChild(div);
+
+            const box = document.getElementById('editPreviewBox');
+            const textElem = document.createElement('div');
+            textElem.className = 'draggable-text-box';
+            textElem.dataset.rowid = rowId;
+            textElem.innerText = textVal || 'نص جديد';
+            textElem.style.left = (xPercent / 100) * box.clientWidth + 'px';
+            textElem.style.top = (yPercent / 100) * box.clientHeight + 'px';
+            
+            const inputField = div.querySelector('.text-input-val');
+            inputField.addEventListener('input', () => {
+                textElem.innerText = inputField.value || 'نص فارغ';
+            });
+
+            makeElementDraggable(textElem, box);
+            box.appendChild(textElem);
+        };
+
+        window.updatePreviewTexts = function(boxId, dragId, containerId) {
+            // يتم التحديث التلقائي عبر مستمعات الأحداث
+        };
+
+        function rebuildPreviewTexts(containerId, boxId) {
+            // تُستخدم عند تغيير الرابط لإعادة بناء النصوص المرتبطة
+        }
 
         window.publishFreeMatch = function() {
             const title = document.getElementById('devRealTitle').value.trim();
             const url = document.getElementById('devRealUrl').value.trim();
-            const overlayText = document.getElementById('devOverlayText').value.trim();
             const hasBlur = document.getElementById('devHasBlur').checked;
             if (!title || !url) return alert("أدخل اسم الحدث والرابط!");
+            
             const processed = processUniversalUrl(url);
             const drag = document.getElementById('dragBlur');
             const box = document.getElementById('previewBox');
@@ -1100,9 +1199,25 @@
             const blurX = box.clientWidth > 0 ? (drag.offsetLeft / box.clientWidth) * 100 : 20;
             const blurY = box.clientHeight > 0 ? (drag.offsetTop / box.clientHeight) * 100 : 20;
 
+            // جمع كافة النصوص المضافة وإحداثياتها النسبية
+            let textsArray = [];
+            document.querySelectorAll('#devCustomTextsContainer .text-item-row').forEach(row => {
+                const val = row.querySelector('.text-input-val').value.trim();
+                if (val) {
+                    const rowId = row.id;
+                    const textElem = box.querySelector(`[data-rowid="${rowId}"]`);
+                    let tx = 20, ty = 20;
+                    if (textElem && box.clientWidth > 0 && box.clientHeight > 0) {
+                        tx = (textElem.offsetLeft / box.clientWidth) * 100;
+                        ty = (textElem.offsetTop / box.clientHeight) * 100;
+                    }
+                    textsArray.push({ text: val, x: tx, y: ty });
+                }
+            });
+
             push(ref(db, 'matches'), {
                 title, url: processed.url, contentType: processed.type,
-                blurX, blurY, hasBlur, overlayText, publisher: currentUsername,
+                blurX, blurY, hasBlur, customTexts: textsArray, publisher: currentUsername,
                 timestamp: Date.now()
             }).then(() => alert("تم النشر بنجاح!"));
         };
@@ -1118,7 +1233,7 @@
                 update(userRef, { points: increment(-10), currentLinks: increment(1) }).then(() => {
                     push(ref(db, 'matches'), {
                         title, url: processed.url, contentType: processed.type,
-                        hasBlur: false, overlayText: "", publisher: currentUsername,
+                        hasBlur: false, customTexts: [], publisher: currentUsername,
                         timestamp: Date.now()
                     });
                     alert("تم نشر الرابط بنجاح!");
@@ -1130,15 +1245,18 @@
             if (confirm("حذف هذا المحتوى؟")) remove(ref(db, 'matches/' + key));
         };
 
-        window.openEditModal = function(key, title, url, overlay, blur, bx, by) {
+        window.openEditModal = function(key, title, url, blur, bx, by, textsJson) {
             document.getElementById('editMatchKey').value = key;
             document.getElementById('editTitleInput').value = title;
             document.getElementById('editUrlInput').value = url;
-            document.getElementById('editOverlayText').value = overlay || '';
             document.getElementById('editHasBlur').checked = !!blur;
-            updatePreviewStream(url, 'editPreviewBox', 'editDragBlur');
             
-            // ضبط موقع المربع المسحوب في معاينة التعديل بناءً على الاحداثيات المحفوظة
+            // تفريغ وتعبئة قائمة النصوص في النافذة المنبثقة للتعديل
+            const container = document.getElementById('editCustomTextsContainer');
+            container.innerHTML = '';
+            
+            updatePreviewStream(url, 'editPreviewBox', 'editDragBlur', 'editCustomTextsContainer');
+            
             setTimeout(() => {
                 const box = document.getElementById('editPreviewBox');
                 const drag = document.getElementById('editDragBlur');
@@ -1146,7 +1264,22 @@
                     drag.style.left = ((bx || 20) / 100) * box.clientWidth + 'px';
                     drag.style.top = ((by || 20) / 100) * box.clientHeight + 'px';
                 }
-            }, 50);
+
+                // إضافة النصوص الموجودة مسبقاً للمحتوى
+                let texts = [];
+                try {
+                    texts = typeof textsJson === 'string' ? JSON.parse(textsJson) : (textsJson || []);
+                } catch { texts = []; }
+
+                if (texts.length === 0 && textsJson) {
+                    // توافق مع النظام القديم إذا وجد نص واحد مفرد
+                    texts = [{ text: textsJson, x: 20, y: 80 }];
+                }
+
+                texts.forEach(item => {
+                    addEditTextRow(item.text, item.x || 20, item.y || 20);
+                });
+            }, 60);
 
             document.getElementById('editModal').classList.remove('hidden');
         };
@@ -1157,7 +1290,6 @@
             const key = document.getElementById('editMatchKey').value;
             const title = document.getElementById('editTitleInput').value.trim();
             const url = document.getElementById('editUrlInput').value.trim();
-            const overlay = document.getElementById('editOverlayText').value.trim();
             const hasBlur = document.getElementById('editHasBlur').checked;
             
             const drag = document.getElementById('editDragBlur');
@@ -1165,12 +1297,27 @@
             const blurX = box.clientWidth > 0 ? (drag.offsetLeft / box.clientWidth) * 100 : 20;
             const blurY = box.clientHeight > 0 ? (drag.offsetTop / box.clientHeight) * 100 : 20;
 
+            let textsArray = [];
+            document.querySelectorAll('#editCustomTextsContainer .text-item-row').forEach(row => {
+                const val = row.querySelector('.text-input-val').value.trim();
+                if (val) {
+                    const rowId = row.id;
+                    const textElem = box.querySelector(`[data-rowid="${rowId}"]`);
+                    let tx = 20, ty = 20;
+                    if (textElem && box.clientWidth > 0 && box.clientHeight > 0) {
+                        tx = (textElem.offsetLeft / box.clientWidth) * 100;
+                        ty = (textElem.offsetTop / box.clientHeight) * 100;
+                    }
+                    textsArray.push({ text: val, x: tx, y: ty });
+                }
+            });
+
             const processed = processUniversalUrl(url);
             update(ref(db, 'matches/' + key), { 
                 title, 
                 url: processed.url, 
                 contentType: processed.type, 
-                overlayText: overlay,
+                customTexts: textsArray,
                 hasBlur,
                 blurX,
                 blurY
@@ -1229,17 +1376,28 @@
                     div.className = 'match-card';
                     let mediaHtml = m.contentType === 'image' ? `<img src="${m.url}">` : `<iframe src="${m.url}" allowfullscreen></iframe>`;
                     const canManage = (isDev || m.publisher === currentUsername);
+                    
+                    // توليد جميع النصوص المضافة الخاصة بالمقطع
+                    let textsHtml = '';
+                    let textsList = m.customTexts || [];
+                    if (textsList.length === 0 && m.overlayText) {
+                        textsList = [{ text: m.overlayText, x: 80, y: 85 }];
+                    }
+                    textsList.forEach(t => {
+                        textsHtml += `<div class="draggable-text-overlay" style="top:${t.y || 20}%; left:${t.x || 20}%;">📌 ${t.text}</div>`;
+                    });
+
                     div.innerHTML = `
                         <h3>📺 ${m.title}</h3>
                         ${isDev ? `<div style="font-size:11px; color:var(--warning); margin-bottom:6px;">👤 الناشر: ${m.publisher}</div>` : ''}
                         <div class="media-container">
                             ${mediaHtml}
                             ${m.hasBlur ? `<div class="blur-overlay" style="top:${m.blurY || 20}%; left:${m.blurX || 20}%;"></div>` : ''}
-                            ${m.overlayText ? `<div class="overlay-text">📌 ${m.overlayText}</div>` : ''}
+                            ${textsHtml}
                         </div>
                         ${canManage ? `
                             <div style="display:flex; gap:8px; margin-top:10px;">
-                                <button class="btn btn-warning btn-sm" onclick="openEditModal('${key}', '${m.title}', '${m.url}', '${m.overlayText || ''}', ${m.hasBlur}, ${m.blurX || 20}, ${m.blurY || 20})">✏️ تعديل وإفيكس</button>
+                                <button class="btn btn-warning btn-sm" onclick="openEditModal('${key}', '${m.title}', '${m.url}', ${m.hasBlur}, ${m.blurX || 20}, ${m.blurY || 20}, ${encodeURIComponent(JSON.stringify(textsList))})">✏️ تعديل ونصوص وأفيكس</button>
                                 <button class="btn btn-danger btn-sm" onclick="deleteMatch('${key}')">🗑️ حذف</button>
                             </div>
                         ` : ''}
