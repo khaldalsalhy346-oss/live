@@ -19,30 +19,27 @@
 
     <style>
         :root {
-            --bg-color: #070b14;
-            --card-bg: #0e1a2b;
-            --card-bg-hover: #142437;
+            --bg-color: #050811;
+            --card-bg: #0b1322;
+            --card-bg-hover: #111d32;
             --primary: #2563eb;
             --primary-hover: #3b82f6;
             --accent: #10b981;
             --accent-hover: #34d399;
-            --text-main: #f1f5f9;
+            --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border: #1e293b;
-            --border-light: #2d3a52;
+            --border-light: #334155;
             --danger: #ef4444;
-            --danger-hover: #f87171;
             --warning: #f59e0b;
-            --warning-hover: #fbbf24;
             --cyan-accent: #00d4ff;
-            --cyan-dim: rgba(0, 212, 255, 0.08);
+            --cyan-dim: rgba(0, 212, 255, 0.1);
             --radius: 16px;
             --radius-sm: 10px;
-            --shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.6);
+            --shadow: 0 16px 35px -10px rgba(0, 0, 0, 0.7);
             --container-max-width: 980px;
-            --header-padding: 16px 20px;
-            --card-padding: 18px;
-            --channel-item-padding: 10px 12px;
+            --header-padding: 16px 22px;
+            --card-padding: 20px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,7 +51,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 14px 12px 30px;
+            padding: 16px 12px 36px;
             font-family: 'Segoe UI', 'Tajawal', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
@@ -65,7 +62,7 @@
             max-width: var(--container-max-width);
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 20px;
         }
 
         header {
@@ -82,7 +79,7 @@
         }
 
         .logo-area h1 {
-            font-size: clamp(16px, 4vw, 22px);
+            font-size: clamp(17px, 4vw, 22px);
             color: var(--text-main);
             display: flex;
             align-items: center;
@@ -90,7 +87,7 @@
             font-weight: 700;
         }
 
-        .logo-area h1 span {
+        .logo-area h1 span.dot-live {
             color: var(--danger);
             animation: pulse-dot 2s ease-in-out infinite;
         }
@@ -101,38 +98,38 @@
         }
 
         .logo-area .subtitle {
-            font-size: 11px;
-            color: var(--text-muted);
+            font-size: 12px;
+            color: var(--cyan-accent);
             display: block;
             margin-top: 2px;
-            font-weight: 400;
+            font-weight: 500;
         }
 
         .stats-badges {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
             flex-wrap: wrap;
         }
 
         .badge {
-            background: rgba(16, 185, 129, 0.08);
+            background: rgba(16, 185, 129, 0.1);
             color: var(--accent);
             padding: 6px 14px;
             border-radius: 30px;
             font-weight: 600;
-            font-size: clamp(11px, 2vw, 14px);
-            border: 1px solid rgba(16, 185, 129, 0.2);
+            font-size: clamp(12px, 2vw, 14px);
+            border: 1px solid rgba(16, 185, 129, 0.25);
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             white-space: nowrap;
         }
 
         .badge.blue {
-            border-color: rgba(59, 130, 246, 0.25);
+            border-color: rgba(59, 130, 246, 0.3);
             color: #60a5fa;
-            background: rgba(59, 130, 246, 0.08);
+            background: rgba(59, 130, 246, 0.1);
         }
 
         .card {
@@ -141,11 +138,16 @@
             border-radius: var(--radius);
             padding: var(--card-padding);
             box-shadow: var(--shadow);
+            transition: border-color 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: var(--border-light);
         }
 
         .card h2 {
-            font-size: clamp(15px, 3vw, 19px);
-            margin-bottom: 14px;
+            font-size: clamp(16px, 3vw, 19px);
+            margin-bottom: 16px;
             color: var(--text-main);
             border-bottom: 2px solid var(--border);
             padding-bottom: 10px;
@@ -168,7 +170,7 @@
             width: 100%;
             display: block;
             aspect-ratio: 16 / 9;
-            background: #0a0a0a;
+            background: #050505;
             max-height: 70vh;
             object-fit: contain;
         }
@@ -178,14 +180,14 @@
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             color: #fff;
-            background: rgba(0, 0, 0, 0.85);
-            padding: 10px 28px;
+            background: rgba(7, 11, 20, 0.9);
+            padding: 12px 28px;
             border-radius: 40px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.3s;
-            backdrop-filter: blur(6px);
+            backdrop-filter: blur(8px);
             border: 1px solid rgba(0, 212, 255, 0.3);
             z-index: 5;
             display: flex;
@@ -207,10 +209,10 @@
         .controls-bar {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 14px;
             justify-content: space-between;
             align-items: stretch;
-            background: #080e1a;
+            background: #070d18;
             padding: 14px;
             border-radius: var(--radius-sm);
             border: 1px solid var(--border);
@@ -219,8 +221,8 @@
         .controls-left {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            min-width: 150px;
+            gap: 10px;
+            min-width: 160px;
             flex: 0 0 auto;
         }
 
@@ -237,20 +239,22 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
+            transition: background 0.2s;
         }
+        .controls-left .btn:hover { background: var(--primary-hover); }
 
         .status-badge {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--cyan-accent);
-            padding: 6px 16px;
-            background: rgba(0, 212, 255, 0.06);
+            padding: 8px 16px;
+            background: rgba(0, 212, 255, 0.08);
             border-radius: 30px;
-            border: 1px solid rgba(0, 212, 255, 0.12);
+            border: 1px solid rgba(0, 212, 255, 0.2);
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             font-weight: 500;
-            min-height: 36px;
+            min-height: 38px;
         }
 
         .status-badge .dot {
@@ -267,20 +271,23 @@
 
         .channel-list {
             flex: 1;
-            min-width: 200px;
-            max-height: 220px;
+            min-width: 220px;
+            max-height: 230px;
             overflow-y: auto;
-            background: #060b15;
+            background: #040811;
             border-radius: var(--radius-sm);
-            padding: 6px;
+            padding: 8px;
             border: 1px solid var(--border);
         }
 
+        .channel-list::-webkit-scrollbar { width: 5px; }
+        .channel-list::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 10px; }
+
         .channel-item {
-            padding: var(--channel-item-padding);
+            padding: 10px 12px;
             cursor: pointer;
             border-radius: 8px;
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
             font-size: clamp(12px, 1.6vw, 14px);
             color: var(--text-muted);
             display: flex;
@@ -302,7 +309,7 @@
             border-radius: var(--radius-sm);
             padding: 14px;
             text-align: center;
-            margin-top: 12px;
+            margin-top: 14px;
             min-height: 70px;
             display: flex;
             align-items: center;
@@ -310,12 +317,14 @@
         }
 
         .match-card {
-            background: #080e1a;
+            background: #070d18;
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
             padding: 16px;
             margin-bottom: 14px;
+            transition: border-color 0.2s;
         }
+        .match-card:hover { border-color: var(--border-light); }
 
         .match-card h3 {
             font-size: clamp(15px, 2.5vw, 18px);
@@ -347,7 +356,7 @@
             width: 120px; height: 45px;
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 6px;
             pointer-events: none;
         }
@@ -355,34 +364,43 @@
         .media-container .overlay-text {
             position: absolute;
             bottom: 16px; right: 16px;
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(0, 0, 0, 0.8);
             color: #fff;
             padding: 6px 16px;
             border-radius: 8px;
             font-size: 13px;
             font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500; }
+        .form-group label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; font-weight: 500; }
         .form-group input, .form-group select {
             width: 100%;
-            padding: 11px 14px;
-            background: #080e1a;
+            padding: 12px 14px;
+            background: #070d18;
             border: 1px solid var(--border);
             color: var(--text-main);
             border-radius: var(--radius-sm);
             font-size: 14px;
             outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--cyan-accent);
         }
 
         .btn {
             padding: 12px 18px; border: none; border-radius: var(--radius-sm);
             font-size: 14px; font-weight: 600; cursor: pointer; color: #fff;
             display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+            transition: filter 0.2s, transform 0.1s;
         }
+        .btn:active { transform: scale(0.98); }
         .btn-primary { background: var(--primary); }
+        .btn-primary:hover { background: var(--primary-hover); }
         .btn-accent { background: var(--accent); }
+        .btn-accent:hover { background: var(--accent-hover); }
         .btn-danger { background: var(--danger); }
         .btn-warning { background: var(--warning); color: #0a0a0a; }
         .btn-purple { background: #7c3aed; }
@@ -391,22 +409,22 @@
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.92);
+            background: rgba(3, 6, 12, 0.92);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 9999; padding: 20px; backdrop-filter: blur(8px);
+            z-index: 9999; padding: 20px; backdrop-filter: blur(10px);
         }
         .modal-overlay.hidden { display: none; }
         .modal-box {
             background: var(--card-bg); border: 1px solid var(--border);
             padding: 28px 24px; border-radius: var(--radius); text-align: center;
-            max-width: 440px; width: 100%; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            max-width: 440px; width: 100%; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
         }
-        .modal-box h3 { color: var(--text-main); margin-bottom: 8px; font-size: 22px; }
+        .modal-box h3 { color: var(--text-main); margin-bottom: 8px; font-size: 20px; }
         .modal-box p { color: var(--text-muted); font-size: 13px; margin-bottom: 18px; }
 
         .user-info-card {
-            background: #080e1a;
-            border: 1px solid rgba(0, 212, 255, 0.12);
+            background: #070d18;
+            border: 1px solid rgba(0, 212, 255, 0.15);
             border-radius: var(--radius-sm);
             padding: 12px 16px;
             margin-bottom: 10px;
@@ -420,10 +438,10 @@
 
         .draggable-blur {
             position: absolute; width: 110px; height: 40px;
-            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(8px);
             border: 2px dashed var(--accent); border-radius: 6px; cursor: grab;
             top: 20px; left: 20px; display: flex; align-items: center; justify-content: center;
-            font-size: 10px; color: #fff; z-index: 10; touch-action: none; font-weight: 500;
+            font-size: 10px; color: #fff; z-index: 10; touch-action: none; font-weight: 600;
         }
         .preview-box {
             position: relative; width: 100%; aspect-ratio: 16 / 9;
@@ -432,7 +450,7 @@
         }
         .preview-box iframe, .preview-box img { width: 100%; height: 100%; border: none; display: block; object-fit: cover; }
         .hidden { display: none !important; }
-        .border-top { border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px; }
+        .border-top { border-top: 1px solid var(--border); padding-top: 16px; margin-top: 16px; }
     </style>
 </head>
 <body>
@@ -452,7 +470,7 @@
             </div>
             <button class="btn btn-primary" onclick="handleAuthLogin()">دخول / تسجيل</button>
 
-            <!-- قسم إزالة الإعلانات في نافذة الدخول أيضاً -->
+            <!-- قسم إزالة الإعلانات في نافذة الدخول -->
             <div class="border-top" style="text-align:right;">
                 <label style="color:var(--accent); font-weight:600; font-size:13px; display:block; margin-bottom:6px;">🛡️ تفعيل إزالة الإعلانات مسبقاً</label>
                 <div style="display:flex; gap:8px;">
@@ -466,7 +484,7 @@
 
     <!-- نافذة تعديل المحتوى -->
     <div id="editModal" class="modal-overlay hidden">
-        <div class="modal-box">
+        <div class="modal-box" style="max-width: 500px;">
             <h3>✏️ تعديل المحتوى والأفيكس</h3>
             <input type="hidden" id="editMatchKey">
             <div class="form-group" style="text-align:right;">
@@ -485,7 +503,7 @@
                 <div id="editDragBlur" class="draggable-blur" draggable="true">اسحب لتغيير الموقع</div>
             </div>
             <div style="display:flex; gap:10px; margin-top:16px;">
-                <button class="btn btn-primary" onclick="saveEditedMatch()">💾 حفظ</button>
+                <button class="btn btn-primary" onclick="saveEditedMatch()">💾 حفظ التعديلات</button>
                 <button class="btn btn-danger" onclick="closeEditModal()">إلغاء</button>
             </div>
         </div>
@@ -497,7 +515,7 @@
             <h3>📺 مشاهدة الإعلان</h3>
             <p>ابقَ في صفحة الإعلان المفتوحة حتى ينتهي العداد:</p>
             <div id="adCountdown" style="font-size:48px; font-weight:700; color:var(--accent); margin-bottom:16px;">25</div>
-            <button id="claimRewardBtn" onclick="claimAdReward()" style="opacity:0.5; pointer-events:none;">⏳ انتظر انتهاء العداد...</button>
+            <button id="claimRewardBtn" class="btn btn-accent" onclick="claimAdReward()" style="opacity:0.5; pointer-events:none;">⏳ انتظر انتهاء العداد...</button>
         </div>
     </div>
 
@@ -519,7 +537,8 @@
     <div id="mainApp" class="container hidden">
         <header>
             <div class="logo-area">
-                <h1>سفوان سبورت <span>●</span> <span class="subtitle" id="welcomeUserDisplay">مرحباً بك</span></h1>
+                <h1>سفوان سبورت <span class="dot-live">●</span></h1>
+                <span class="subtitle" id="welcomeUserDisplay">مرحباً بك</span>
             </div>
             <div class="stats-badges">
                 <div class="badge"><span>⭐</span> <span id="myPoints">0</span></div>
@@ -656,7 +675,6 @@
         let allUsersData = {};
         let firebaseMatches = {};
 
-        // التحقق التلقائي عند فتح الصفحة: إذا كان مسجلاً من قبل يتم تخطي نافذة الدخول مباشرة
         window.addEventListener('DOMContentLoaded', () => {
             if (currentUsername) {
                 userRef = ref(db, 'users/' + sanitizeKey(currentUsername));
@@ -900,11 +918,10 @@
                 return await res.text();
             } catch {
                 const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-                const res = await proxyFetch(proxy);
+                const res = await fetch(proxy);
                 return await res.text();
             }
         }
-        async function proxyFetch(u) { return await fetch(u); }
 
         function parseM3U(content) {
             const lines = content.split(/\r?\n/);
@@ -1069,7 +1086,7 @@
         window.toggleDevLoginModal = function() { document.getElementById('devLoginModal').classList.toggle('hidden'); };
 
         window.verifyDevCode = function() {
-            if (document.getElementById('devSecretCode').value.trim() === "الله") {
+            if (document.getElementById('devSecretCode').value.trim() === "بابا") {
                 document.getElementById('devLoginModal').classList.add('hidden');
                 document.getElementById('devPanelContainer').style.display = 'block';
                 alert("أهلاً بك في لوحة المطورين!");
@@ -1106,7 +1123,7 @@
             list.innerHTML = '';
             const isDev = (document.getElementById('devPanelContainer').style.display === 'block');
             if (firebaseMatches && Object.keys(firebaseMatches).length > 0) {
-                Object.entries(firebaseMatches).reverse().forEaach(([key, m]) => {
+                Object.entries(firebaseMatches).reverse().forEach(([key, m]) => {
                     const div = document.createElement('div');
                     div.className = 'match-card';
                     let mediaHtml = m.contentType === 'image' ? `<img src="${m.url}">` : `<iframe src="${m.url}" allowfullscreen></iframe>`;
